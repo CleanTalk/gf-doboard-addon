@@ -1,0 +1,4 @@
+input.gf-doboard-password-field[type="text"] {
+    -webkit-text-security: disc;
+    text-security: disc;
+}
