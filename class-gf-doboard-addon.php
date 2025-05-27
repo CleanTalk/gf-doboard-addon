@@ -386,18 +386,21 @@ class GFdoBoard_AddOn extends GFAddOn {
     protected function doboard_get_entry_fields_string($entry, $form, $type_string, $separator = "<br>") {
         $result = [];
         $used_values = [];
-        foreach ($form['fields'] as $field) {
-            if ($type_string === 'comment') {
-                // Для простых полей
+        if ($type_string === 'comment') {
+            if (!empty($entry['source_url'])) {
+                $result[] = 'URL Page: ' . esc_html($entry['source_url']);
+            }
+            if (!empty($entry['ip'])) {
+                $result[] = 'IP User: ' . esc_html($entry['ip']);
+            }
+            foreach ($form['fields'] as $field) {
                 if (isset($entry[$field->id]) && !is_array($entry[$field->id]) && trim($entry[$field->id]) !== '') {
                     $value = trim($entry[$field->id]);
-                    // Проверяем на дубли
                     if (!in_array($value, $used_values, true)) {
                         $result[] = $field->label . ': ' . $value;
                         $used_values[] = $value;
                     }
                 }
-                // Для составных полей (например, name)
                 if (!empty($field->inputs) && is_array($field->inputs)) {
                     foreach ($field->inputs as $input) {
                         $input_id = (string)$input['id'];
@@ -410,14 +413,9 @@ class GFdoBoard_AddOn extends GFAddOn {
                         }
                     }
                 }
-
-                if (!empty($entry['source_url'])) {
-                    $result[] = 'URL Page: ' . esc_html($entry['source_url']);
-                }
-                if (!empty($entry['ip'])) {
-                    $result[] = 'IP User: ' . esc_html($entry['ip']);
-                }
-            } elseif ($type_string === 'title_name') {
+            }
+        } elseif ($type_string === 'title_name') {
+            foreach ($form['fields'] as $field) {
                 if (
                     in_array($field->type, array('textarea', 'text', 'post_content', 'paragraph')) &&
                     isset($entry[$field->id]) &&
