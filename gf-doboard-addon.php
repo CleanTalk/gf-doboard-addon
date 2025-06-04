@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin URI: https://www.gravityforms.com
  * Description: Integrates Gravity Forms with doBoard, сreates tasks in the doBoard task board for each submission of forms
  * Version: 1.0
- * Author: cleantalk
- * Author URI: https://www.cleantalk.org
+ * Author: CleanTalk - Gravity Forms doBoard Add-On <welcome@cleantalk.org>
+ * Author URI: https://doboard.com/
  * Text Domain: gf-doboard-addon
  * Domain Path: /languages
  */

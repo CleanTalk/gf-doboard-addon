@@ -115,7 +115,23 @@ class GFdoBoard_AddOn extends GFAddOn {
         parent::init();
 
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
-        add_action( 'gform_after_submission', array( $this, 'doboard_send' ), 10, 2 );
+        add_action( 'gform_after_submission', array( $this, 'doboard_send_after_submission' ), 10, 2 );
+    }
+
+    /**
+     * Handles the sending of data to doBoard after form submission.
+     *
+     * @since  1.0
+     * @access public
+     *
+     * @param array $entry The entry data.
+     * @param array $form  The form data.
+     */
+    public function doboard_send_after_submission( $entry, $form ) {
+        if ( isset( $entry['status'] ) && $entry['status'] === 'spam' ) {
+            return;
+        }
+        $this->doboard_send( $entry, $form );
     }
 
     public function enqueue_admin_styles() {
@@ -164,6 +180,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
+                        'tooltip'  => esc_html__( 'Enter the email address associated with your doBoard account.', 'gf-doboard-addon'),
                     ),
                     array(
                         'name'     => 'doBoard_password',
@@ -171,6 +188,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'type'     => 'text',
                         'class'    => 'medium gf-doboard-password-field',
                         'required' => true,
+                        'tooltip'  => esc_html__( 'Enter the password for your doBoard account. This will be used to authenticate your requests.', 'gf-doboard-addon'),
                     ),
                     array(
                         'name'     => 'doBoard_company_id',
@@ -178,6 +196,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
+                        'tooltip'  => esc_html__( 'Enter the ID of the company in doBoard where tasks will be created.', 'gf-doboard-addon' ),
                     ),
                     array(
                         'name'     => 'doBoard_project_id',
@@ -185,6 +204,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
+                        'tooltip'  => esc_html__( 'Enter the ID of the project in doBoard where tasks will be created.', 'gf-doboard-addon' ),
                     ),
                     array(
                         'name'     => 'doBoard_task_board_id',
@@ -192,6 +212,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
+                        'tooltip'  => esc_html__( 'Enter the ID of the task board in doBoard where tasks will be created.', 'gf-doboard-addon'),
                     ),
                     array(
                         'name'     => 'doBoard_label_ids',
@@ -199,6 +220,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => false,
+                        'tooltip'  => esc_html__( 'Enter the IDs of the labels in doBoard that you want to apply to the tasks. Separate multiple IDs with commas. Example "14, 43, ..."', 'gf-doboard-addon'),
                     ),
                     array(
                         'name'     => 'doBoard_auth_callback',
@@ -337,6 +359,7 @@ class GFdoBoard_AddOn extends GFAddOn {
             'user_id'    => $user_id,
             'project_id' => $project,
             'track_id' => $task_board_id,
+            'label_ids' => $doBoard_label,
         );
 
         $doBoard = new GF_doBoard_API();
