@@ -84,9 +84,9 @@ class GF_doBoard_API {
         return $response;
     }
 
-    public function add_task($data, $company_id ) {
+    public function add_task($data, $account_id ) {
         $response = $this->make_request(
-            $company_id . '/task_add', 
+            $account_id . '/task_add', 
             $data,
             'POST',
             200
@@ -95,9 +95,9 @@ class GF_doBoard_API {
         return $response;
     }
 
-    public function add_comment($data, $company_id ) {
+    public function add_comment($data, $account_id ) {
         $response = $this->make_request(
-            $company_id . '/comment_add', 
+            $account_id . '/comment_add', 
             $data,
             'POST',
             200

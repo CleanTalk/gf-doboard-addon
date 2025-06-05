@@ -173,6 +173,9 @@ class GFdoBoard_AddOn extends GFAddOn {
         return array(
             array(
                 'title'  => esc_html__( 'doBoard Settings', 'gf-doboard-addon' ),
+                'description' => wp_kses_post(
+                    __( 'doBoard.com is an online task management app that helps you convert messages submitted through contact, order, or other forms into actionable tasks within your company. You can find the requirements to get started at <a href="https://doboard.com/" target="_blank">doBoard.com</a>.', 'gf-doboard-addon' ),
+                ),        
                 'fields' => array(
                     array(
                         'name'     => 'doBoard_email',
@@ -191,12 +194,12 @@ class GFdoBoard_AddOn extends GFAddOn {
                         'tooltip'  => esc_html__( 'Enter the password for your doBoard account. This will be used to authenticate your requests.', 'gf-doboard-addon'),
                     ),
                     array(
-                        'name'     => 'doBoard_company_id',
-                        'label'    => esc_html__( 'Company ID', 'gf-doboard-addon' ),
+                        'name'     => 'doBoard_account_id',
+                        'label'    => esc_html__( 'Account ID', 'gf-doboard-addon' ),
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the ID of the company in doBoard where tasks will be created.', 'gf-doboard-addon' ),
+                        'tooltip'  => esc_html__( 'Enter the ID of the account in doBoard where tasks will be created.', 'gf-doboard-addon' ),
                     ),
                     array(
                         'name'     => 'doBoard_project_id',
@@ -216,7 +219,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                     ),
                     array(
                         'name'     => 'doBoard_label_ids',
-                        'label'    => esc_html__( 'Label ID', 'gf-doboard-addon' ),
+                        'label'    => esc_html__( 'Label ID (Optional)', 'gf-doboard-addon' ),
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => false,
@@ -234,6 +237,19 @@ class GFdoBoard_AddOn extends GFAddOn {
 							'success' => esc_html__( 'DoBoard settings have been updated.', 'gf-doboard-addon' ),
 						),
 					),
+                    array(
+                        'type'  => 'html',
+                        'html'  => wp_kses_post(
+                            __( '<strong>To get started and test the integration:</strong><br>
+                            1) Go to <a href="https://doboard.com/" target="_blank">doboard.com</a> → Projects → TARGET PROJECT. Copy the Project ID from the URL. It looks like <code>https://doboard.com/ACCOUNT_ID/projects/PROJECT_ID</code>.<br>
+                            2) In the TARGET PROJECT, go to the TARGET BOARD. Copy the Board ID from the URL. It looks like <code>https://doboard.com/ACCOUNT_ID/board/BOARD_ID</code>.<br>
+                            3) Paste the Account ID, Project ID, and Board ID into the corresponding fields below.<br>
+                            4) To test the integration, submit test data through a form on your site, then check for the new task at doBoard.com.<br>
+                            5) Done!',
+                            'gf-doboard-addon'
+                            )
+                        ),
+                    ),
                 ),
             ),
         );
@@ -243,7 +259,7 @@ class GFdoBoard_AddOn extends GFAddOn {
         return array(
             'doBoard_email'      => $this->get_plugin_setting('doBoard_email'),
             'doBoard_password'   => $this->get_plugin_setting('doBoard_password'),
-            'doBoard_company_id'    => $this->get_plugin_setting('doBoard_company_id'),
+            'doBoard_account_id'    => $this->get_plugin_setting('doBoard_account_id'),
             'doBoard_project_id'    => $this->get_plugin_setting('doBoard_project_id'),
             'doBoard_task_board_id' => $this->get_plugin_setting('doBoard_task_board_id'),
             'doBoard_label_ids'      => $this->get_plugin_setting('doBoard_label_ids'),
@@ -347,7 +363,7 @@ class GFdoBoard_AddOn extends GFAddOn {
         $project        = $this->get_plugin_setting( 'doBoard_project_id' );
         $session_id     = $this->get_plugin_setting( 'doBoard_session_id' );
         $user_id        = $this->get_plugin_setting( 'doBoard_user_id' );
-        $company_id     = $this->get_plugin_setting( 'doBoard_company_id' );
+        $account_id     = $this->get_plugin_setting( 'doBoard_account_id' );
         $task_board_id  = $this->get_plugin_setting('doBoard_task_board_id');
         $doBoard_label  = $this->get_plugin_setting('doBoard_label_ids');
         $fields_string = $this->doboard_get_entry_fields_string($entry, $form, 'title_name', " ");
@@ -364,7 +380,7 @@ class GFdoBoard_AddOn extends GFAddOn {
 
         $doBoard = new GF_doBoard_API();
         try {
-            $add_task_doBoard_result = $doBoard->add_task($data, $company_id);
+            $add_task_doBoard_result = $doBoard->add_task($data, $account_id);
         } catch (Exception $e) {
             if (strpos($e->getMessage(), 'Unauthorized') !== false) {
                 $this->doboard_auth();
@@ -372,7 +388,7 @@ class GFdoBoard_AddOn extends GFAddOn {
                 $user_id    = $this->get_plugin_setting( 'doBoard_user_id' );
                 $data['session_id'] = $session_id;
                 $data['user_id'] = $user_id;
-                $add_task_doBoard_result = $doBoard->add_task($data, $company_id);
+                $add_task_doBoard_result = $doBoard->add_task($data, $account_id);
             } else {
                 throw $e;
             }
@@ -389,7 +405,7 @@ class GFdoBoard_AddOn extends GFAddOn {
         $project    = $this->get_plugin_setting( 'doBoard_project_id' );
         $session_id = $this->get_plugin_setting( 'doBoard_session_id' );
         $comment = $this->doboard_get_entry_fields_string($entry, $form, 'comment', "<br>");
-        $company_id = $this->get_plugin_setting( 'doBoard_company_id' );
+        $account_id = $this->get_plugin_setting( 'doBoard_account_id' );
 
         $data = array(
             'session_id' => $session_id,
@@ -399,7 +415,7 @@ class GFdoBoard_AddOn extends GFAddOn {
         );
 
         $doBoard = new GF_doBoard_API();
-        $add_comment_doBoard_result = $doBoard->add_comment($data, $company_id);
+        $add_comment_doBoard_result = $doBoard->add_comment($data, $account_id);
 
         if ( is_wp_error( $add_comment_doBoard_result ) ) {
             error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_comment_doBoard_result->get_error_message() );
