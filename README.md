@@ -10,9 +10,9 @@ Perfect for automating the processing of leads, orders, support requests, or any
 ## Features
 
 - Automatically create tasks in doBoard on form submission
-- Flexible settings: choose company, project, board, and labels for new tasks
-- Simple authentication using your doBoard email and password
-- Supports multiple forms with individual configuration
+- Flexible feed settings: choose account, project, board, and labels for each form
+- Simple authentication using your user token (set globally)
+- Supports multiple forms with individual feed configuration
 - User-friendly settings interface in the WordPress admin
 
 ## Requirements
@@ -24,9 +24,9 @@ Perfect for automating the processing of leads, orders, support requests, or any
 
 1. Upload the plugin files to the `/wp-content/plugins/gf-doboard-addon` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to Gravity Forms → doBoard settings.
-4. Enter your doBoard credentials and configure integration options.
-5. Save your settings. Tasks will now be created automatically on form submission.
+3. Go to **Gravity Forms Settings → doBoard** and enter your doBoard user token (global setting).
+4. For each form, go to **Forms → Form Settings → doBoard Feeds** and configure the integration options (account, project, board, labels, etc.).
+5. Save your settings. Tasks will now be created automatically on form submission according to your feed configuration.
 
 ## Support
 

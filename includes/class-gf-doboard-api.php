@@ -73,15 +73,48 @@ class GF_doBoard_API {
         return $body;
     }
 
-    public function auth($data) {
+    public function auth($user_token) {
         $response = $this->make_request(
-            'user_authorize', 
-            $data,
-            'POST',
+            'user_authorize?user_token=' . urlencode($user_token),
+            array(),
+            'GET',
             200
         );
-
         return $response;
+    }
+
+    public function get_projects($account_id, $session_id) {
+        $response = $this->make_request(
+            $account_id . '/project_get?session_id=' . urlencode($session_id),
+            array(),
+            'GET',
+            200
+        );
+        return !empty($response['data']['projects']) ? $response['data']['projects'] : array();
+    }
+
+    public function get_task_boards($account_id, $session_id, $project_id = null) {
+        $url = $account_id . '/track_get?session_id=' . urlencode($session_id) . '&status=ACTIVE';
+        if ($project_id) {
+            $url .= '&project_id=' . urlencode($project_id);
+        }
+        $response = $this->make_request(
+            $url,
+            array(),
+            'GET',
+            200
+        );
+        return !empty($response['data']['tracks']) ? $response['data']['tracks'] : array();
+    }
+
+    public function get_labels($account_id, $session_id) {
+        $response = $this->make_request(
+            $account_id . '/label_get?session_id=' . urlencode($session_id),
+            array(),
+            'GET',
+            200
+        );
+        return !empty($response['data']['labels']) ? $response['data']['labels'] : array();
     }
 
     public function add_task($data, $account_id ) {

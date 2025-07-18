@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
-GFForms::include_addon_framework();
+GFForms::include_feed_addon_framework();
 /**
  * Gravity Forms doBoard Add-On
  *
@@ -13,7 +13,7 @@ GFForms::include_addon_framework();
  * @author      Cleantalk
  * @since       1.0
  */
-class GFdoBoard_AddOn extends GFAddOn {
+class GFdoBoard_AddOn extends GFFeedAddOn {
 
 	/**
 	 * Defines the version of the Breeze Add-On.
@@ -106,6 +106,12 @@ class GFdoBoard_AddOn extends GFAddOn {
     private static $_instance = null;
 
     /**
+     * Summary of api
+     * @var 
+     */
+    protected $api = null;
+
+    /**
      * Plugin initialization
      *
      * @since  1.0
@@ -113,9 +119,38 @@ class GFdoBoard_AddOn extends GFAddOn {
      */
     public function init() {
         parent::init();
+        add_filter('gform_pre_validation_' . $this->_slug, array($this, 'fix_label_ids_setting'));
+        add_filter('gform_pre_process_feed_settings_' . $this->_slug, array($this, 'fix_label_ids_setting'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
+        add_action('gform_after_submission', array($this, 'doboard_send_after_submission'), 10, 2);
+        if (isset($_POST['_gform_setting_doBoard_label_ids']) && !is_array($_POST['_gform_setting_doBoard_label_ids'])) {
+            $_POST['_gform_setting_doBoard_label_ids'] = array($_POST['_gform_setting_doBoard_label_ids']);
+        }
 
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
-        add_action( 'gform_after_submission', array( $this, 'doboard_send_after_submission' ), 10, 2 );
+        add_action('wp_ajax_gf_doboard_get_projects', function(){
+            $account_id = sanitize_text_field($_POST['account_id']);
+            $session_id = sanitize_text_field($_POST['session_id']);
+            $addon = GFdoBoard_AddOn::get_instance();
+            $projects = $addon->get_projects_for_feed_setting($account_id, $session_id);
+            wp_send_json_success($projects);
+        });
+
+        add_action('wp_ajax_gf_doboard_get_task_boards', function(){
+            $account_id = sanitize_text_field($_POST['account_id']);
+            $session_id = sanitize_text_field($_POST['session_id']);
+            $project_id = sanitize_text_field($_POST['project_id']);
+            $addon = GFdoBoard_AddOn::get_instance();
+            $boards = $addon->get_task_boards_for_feed_setting($account_id, $session_id, $project_id);
+            wp_send_json_success($boards);
+        });
+
+        add_action('wp_ajax_gf_doboard_get_labels', function(){
+            $account_id = sanitize_text_field($_POST['account_id']);
+            $session_id = sanitize_text_field($_POST['session_id']);
+            $addon = GFdoBoard_AddOn::get_instance();
+            $labels = $addon->get_labels_for_feed_setting($account_id, $session_id);
+            wp_send_json_success($labels);
+        });
     }
 
     /**
@@ -140,6 +175,13 @@ class GFdoBoard_AddOn extends GFAddOn {
             plugins_url( '/public/gf-doboard-admin.css', __FILE__ ),
             array(),
             $this->_version
+        );
+        wp_enqueue_script(
+            'gf-doboard-admin-js',
+            plugins_url( '/public/gf-doboard-admin.js', __FILE__ ),
+            array('jquery'),
+            $this->_version,
+            true
         );
     }
 
@@ -174,80 +216,27 @@ class GFdoBoard_AddOn extends GFAddOn {
             array(
                 'title'  => esc_html__( 'doBoard Settings', 'gf-doboard-addon' ),
                 'description' => wp_kses_post(
-                    __( 'doBoard.com is an online task management app that helps you convert messages submitted through contact, order, or other forms into actionable tasks within your company. You can find the requirements to get started at <a href="https://doboard.com/" target="_blank">doBoard.com</a>.', 'gf-doboard-addon' ),
-                ),        
+                    "<a href='https://doboard.com/' target='_blank' style='font-weight: bold;'>" . esc_html__( "doBoard.com", 'gf-doboard-addon' ) . "</a> "
+                    . esc_html__( 'is an online task management app that helps you convert messages submitted through forms into actionable tasks.', 'gf-doboard-addon' )
+                    . " <a href='https://doboard.com/' target='_blank'>" . esc_html__( 'Learn more', 'gf-doboard-addon' ) . "</a>"
+                ),
                 'fields' => array(
                     array(
-                        'name'     => 'doBoard_email',
-                        'label'    => esc_html__( 'Email', 'gf-doboard-addon' ),
+                        'name'     => 'doBoard_user_token',
+                        'label'    => esc_html__( 'User Token', 'gf-doboard-addon' ),
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the email address associated with your doBoard account.', 'gf-doboard-addon'),
+                        'tooltip'  => esc_html__( 'Enter your doBoard user token.', 'gf-doboard-addon'),
+                        'description' => wp_kses_post(
+                            esc_html__( 'You can find your user token in your', 'gf-doboard-addon' ) .
+                            " <a href='https://cleantalk.org/my/profile' target='_blank'>" . esc_html__( 'doBoard account settings.', 'gf-doboard-addon' ) . "</a>"
+                        ),
                     ),
                     array(
-                        'name'     => 'doBoard_password',
-                        'label'    => esc_html__( 'Password', 'gf-doboard-addon' ),
-                        'type'     => 'text',
-                        'class'    => 'medium gf-doboard-password-field',
-                        'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the password for your doBoard account. This will be used to authenticate your requests.', 'gf-doboard-addon'),
-                    ),
-                    array(
-                        'name'     => 'doBoard_account_id',
-                        'label'    => esc_html__( 'Account ID', 'gf-doboard-addon' ),
-                        'type'     => 'text',
-                        'class'    => 'medium',
-                        'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the ID of the account in doBoard where tasks will be created.', 'gf-doboard-addon' ),
-                    ),
-                    array(
-                        'name'     => 'doBoard_project_id',
-                        'label'    => esc_html__( 'Project ID', 'gf-doboard-addon' ),
-                        'type'     => 'text',
-                        'class'    => 'medium',
-                        'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the ID of the project in doBoard where tasks will be created.', 'gf-doboard-addon' ),
-                    ),
-                    array(
-                        'name'     => 'doBoard_task_board_id',
-                        'label'    => esc_html__( 'Task Board ID', 'gf-doboard-addon' ),
-                        'type'     => 'text',
-                        'class'    => 'medium',
-                        'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the ID of the task board in doBoard where tasks will be created.', 'gf-doboard-addon'),
-                    ),
-                    array(
-                        'name'     => 'doBoard_label_ids',
-                        'label'    => esc_html__( 'Label ID (Optional)', 'gf-doboard-addon' ),
-                        'type'     => 'text',
-                        'class'    => 'medium',
-                        'required' => false,
-                        'tooltip'  => esc_html__( 'Enter the IDs of the labels in doBoard that you want to apply to the tasks. Separate multiple IDs with commas. Example "14, 43, ..."', 'gf-doboard-addon'),
-                    ),
-                    array(
-                        'name'     => 'doBoard_auth_callback',
-                        'type'     => 'hidden',
-                        'validation_callback' => array( $this, 'doboard_auth' ),
-                        'required' => false,
-                    ),
-                    array(
-						'type'              => 'save',
-						'messages'          => array(
-							'success' => esc_html__( 'DoBoard settings have been updated.', 'gf-doboard-addon' ),
-						),
-					),
-                    array(
-                        'type'  => 'html',
-                        'html'  => wp_kses_post(
-                            __( '<strong>To get started and test the integration:</strong><br>
-                            1) Go to <a href="https://doboard.com/" target="_blank">doboard.com</a> → Projects → TARGET PROJECT. Copy the Project ID from the URL. It looks like <code>https://doboard.com/ACCOUNT_ID/projects/PROJECT_ID</code>.<br>
-                            2) In the TARGET PROJECT, go to the TARGET BOARD. Copy the Board ID from the URL. It looks like <code>https://doboard.com/ACCOUNT_ID/board/BOARD_ID</code>.<br>
-                            3) Paste the Account ID, Project ID, and Board ID into the corresponding fields below.<br>
-                            4) To test the integration, submit test data through a form on your site, then check for the new task at doBoard.com.<br>
-                            5) Done!',
-                            'gf-doboard-addon'
-                            )
+                        'type'     => 'save',
+                        'messages' => array(
+                            'success' => esc_html__( 'Settings updated.', 'gf-doboard-addon' ),
                         ),
                     ),
                 ),
@@ -255,90 +244,257 @@ class GFdoBoard_AddOn extends GFAddOn {
         );
     }
 
-    protected function get_doboard_settings() {
+    /**
+     * Define feed settings fields.
+     *
+     * @since  1.0
+     * @access public
+     * @return array The settings fields associated with feeds for the Breeze Add-On
+     */
+    public function feed_settings_fields() {
+        $current_settings = $this->get_current_settings();
+        error_log('Current feed settings: ' . print_r($current_settings, true));
+        $auth_data = $this->get_auth_data_for_feed_fields();
+        $accounts = $this->get_accounts_for_feed_setting();
+        $default_account_id = '';
+        foreach ($accounts as $acc) {
+            if (!empty($acc['value'])) {
+                $default_account_id = $acc['value'];
+                break;
+            }
+        }
+        $feed_account_id = $this->get_setting('doBoard_account_id');
+        $selected_account_id = rgpost('feed_setting_doBoard_account_id') ?: $feed_account_id ?: $default_account_id;
+
         return array(
-            'doBoard_email'      => $this->get_plugin_setting('doBoard_email'),
-            'doBoard_password'   => $this->get_plugin_setting('doBoard_password'),
-            'doBoard_account_id'    => $this->get_plugin_setting('doBoard_account_id'),
-            'doBoard_project_id'    => $this->get_plugin_setting('doBoard_project_id'),
-            'doBoard_task_board_id' => $this->get_plugin_setting('doBoard_task_board_id'),
-            'doBoard_label_ids'      => $this->get_plugin_setting('doBoard_label_ids'),
-            'doBoard_user_token' => $this->get_plugin_setting('doBoard_user_token'),
-            'doBoard_user_id'    => $this->get_plugin_setting('doBoard_user_id'),
-            'doBoard_session_id' => $this->get_plugin_setting('doBoard_session_id'),
-            'doBoard_session_time' => $this->get_plugin_setting('doBoard_session_time'),
+            array(
+                'title'  => esc_html__( 'doBoard Feeds', 'gf-doboard-addon' ),
+                'fields' => array(
+                    array(
+                        'name'      => 'feed_name',
+                        'label'     => esc_html__( 'Feed Name', 'gf-doboard-addon' ),
+                        'type'      => 'text',
+                        'class'     => 'medium',
+                        'required'  => true,
+                        'tooltip'   => esc_html__( 'Enter a name to identify this feed.', 'gf-doboard-addon' ),
+                    ),
+                    array(
+                        'name'     => 'doBoard_account_id',
+                        'label'    => esc_html__( 'Account ID', 'gf-doboard-addon' ),
+                        'type'     => 'select',
+                        'choices'  => $accounts,
+                        'class'    => 'medium',
+                        'required' => true,
+                        'default_value' => $default_account_id,
+                        'value'    => $selected_account_id,
+                        'tooltip'  => esc_html__( 'Select the doBoard account to which the tasks will be sent.', 'gf-doboard-addon'),
+                    ),
+                    array(
+                        'name'     => 'doBoard_project_id',
+                        'label'    => esc_html__( 'Project ID', 'gf-doboard-addon' ),
+                        'type'     => 'select',
+                        'choices'  => $this->get_projects_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
+                        'class'    => 'medium',
+                        'required' => true,
+                        'tooltip'  => esc_html__( 'Enter the doBoard project ID where tasks will be created.', 'gf-doboard-addon'),
+                    ),
+                    array(
+                        'name'     => 'doBoard_task_board_id',
+                        'label'    => esc_html__( 'Task Board ID', 'gf-doboard-addon' ),
+                        'type'     => 'select',
+                        'choices'  => $this->get_task_boards_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
+                        'class'    => 'medium',
+                        'required' => false,
+                        'tooltip'  => esc_html__( 'Select the doBoard task board where tasks will be created.', 'gf-doboard-addon'),
+                    ),
+                    array(
+                        'name'     => 'doBoard_label_ids',
+                        'label'    => esc_html__( 'Label IDs', 'gf-doboard-addon' ),
+                        'type'     => 'select',
+                        'choices'  => $this->get_labels_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
+                        'class'    => 'medium',
+                        'multiple' => true,
+                        'required' => false,
+                        'tooltip'  => esc_html__( 'Select one or more doBoard labels to assign to the tasks.', 'gf-doboard-addon'),
+                    ),
+                    array(
+                        'name'  => 'doBoard_session_id',
+                        'type'  => 'hidden',
+                        'value' => isset($auth_data['session_id']) ? $auth_data['session_id'] : '',
+                    ),
+                    array(
+                        'name'  => 'doBoard_user_id',
+                        'type'  => 'hidden',
+                        'value' => isset($auth_data['user_id']) ? $auth_data['user_id'] : '',
+                    ),
+                    array(
+                        'name'  => 'doBoard_email',
+                        'type'  => 'hidden',
+                        'value' => isset($auth_data['email']) ? $auth_data['email'] : '',
+                    ),
+                ),
+            ),
         );
     }
 
-    protected function set_doboard_settings( $settings ) {
-        $current = $this->get_plugin_settings();
-        if ( ! is_array( $current ) ) {
-            $current = array();
-        }
-        $new = array_merge($current, $settings);
-        $this->update_plugin_settings($new);
-    }
-
-    public function doboard_auth() {
-        $email = '';
-        $password = '';
-
-        if (rgpost('gform-settings-save') === 'save') {
-            $email = rgpost('_gform_setting_doBoard_email');
-            $password = rgpost('_gform_setting_doBoard_password');
-        } else if (empty($email) || empty($password)) {
-            $email = $this->get_plugin_setting('doBoard_email');
-            $password = $this->get_plugin_setting('doBoard_password');
-        }
-
-        if ($this->doboard_is_session_valid()) {
+    public function initialize_api() {
+        if ( is_object( $this->api ) ) {
             return true;
         }
-
         if ( ! class_exists( 'GF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
-        $data = array(
-            'email'      => $email,
-            'password'   => $password,
-        );
+        $user_token = $this->get_plugin_setting('doBoard_user_token');
+        if ( empty( $user_token ) ) {
+            return false;
+        }
         $doBoard = new GF_doBoard_API();
-        $auth_result = $doBoard->auth($data);
-
-        if (!empty($auth_result['data']['session_id'])) {
-            $this->set_doboard_settings(array(
-                'doBoard_session_id'   => $auth_result['data']['session_id'],
-                'doBoard_user_id'      => $auth_result['data']['user_id'],
-                'doBoard_user_token'   => $auth_result['data']['user_token'],
-                'doBoard_session_time' => time(),
-            ));
+        $auth_result = $doBoard->auth($user_token);
+        if ( !empty($auth_result['data']['accounts']) ) {
+            $this->api = $doBoard;
             return true;
         }
-
         return false;
     }
 
-    protected function doboard_is_session_valid() {
-        $session_id = $this->get_plugin_setting('doBoard_session_id');
-        $session_time = $this->get_plugin_setting('doBoard_session_time');
-        $lifetime = 3600;
-
-        if (empty($session_id) || empty($session_time)) {
-            return false;
+    protected function get_accounts_for_feed_setting() {
+        $choices = array(
+            array(
+                'label' => esc_html__( 'Select an account', 'gf-doboard-addon' ),
+                'value' => '',
+            ),
+        );
+        $user_token = $this->get_plugin_setting('doBoard_user_token');
+        if (!$user_token) {
+            return $choices;
         }
-
-        if (time() - intval($session_time) > $lifetime) {
-            return false;
+        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+            require_once( 'includes/class-gf-doboard-api.php' );
         }
-
-        return true;
+        $doBoard = new GF_doBoard_API();
+        $auth_result = $doBoard->auth($user_token);
+        if (!empty($auth_result['data']['accounts']) && is_array($auth_result['data']['accounts'])) {
+            foreach ($auth_result['data']['accounts'] as $acc) {
+                $choices[] = array(
+                    'label' => $acc['org_name'],
+                    'value' => $acc['account_id'],
+                );
+            }
+        }
+        return $choices;
     }
 
-    public function doboard_send ($entry, $form) {
+    protected function get_auth_data_for_feed_fields() {
+        $user_token = $this->get_plugin_setting('doBoard_user_token');
+        if (!$user_token) {
+            return array();
+        }
+        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+            require_once( 'includes/class-gf-doboard-api.php' );
+        }
+        $doBoard = new GF_doBoard_API();
+        $auth_result = $doBoard->auth($user_token);
+        if (!empty($auth_result['data'])) {
+            return array(
+                'session_id' => isset($auth_result['data']['session_id']) ? $auth_result['data']['session_id'] : '',
+                'user_id'    => isset($auth_result['data']['user_id']) ? $auth_result['data']['user_id'] : '',
+                'email'      => isset($auth_result['data']['email']) ? $auth_result['data']['email'] : '',
+            );
+        }
+        return array();
+    }
+
+    protected function get_projects_for_feed_setting($account_id, $session_id) {
+        $choices = array(
+            array(
+                'label' => esc_html__( 'Select a project', 'gf-doboard-addon' ),
+                'value' => '',
+            ),
+        );
+        if (!$account_id || !$session_id) {
+            return $choices;
+        }
+        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+            require_once( 'includes/class-gf-doboard-api.php' );
+        }
+        $doBoard = new GF_doBoard_API();
+        $projects = $doBoard->get_projects($account_id, $session_id);
+
+        if (!empty($projects) && is_array($projects)) {
+            foreach ($projects as $project) {
+                $choices[] = array(
+                    'label' => $project['name'],
+                    'value' => $project['project_id'],
+                );
+            }
+        }
+        return $choices;
+    }
+
+    protected function get_task_boards_for_feed_setting($account_id, $session_id, $project_id = null) {
+        $choices = array(
+            array(
+                'label' => esc_html__( 'Select a task board', 'gf-doboard-addon' ),
+                'value' => '',
+            ),
+        );
+        if (!$account_id || !$session_id) {
+            return $choices;
+        }
+        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+            require_once( 'includes/class-gf-doboard-api.php' );
+        }
+        $doBoard = new GF_doBoard_API();
+        $task_boards = $doBoard->get_task_boards($account_id, $session_id, $project_id);
+
+        if (!empty($task_boards) && is_array($task_boards)) {
+            foreach ($task_boards as $board) {
+                $choices[] = array(
+                    'label' => $board['name'],
+                    'value' => $board['track_id'],
+                );
+            }
+        }
+        return $choices;
+    }
+
+    protected function get_labels_for_feed_setting($account_id, $session_id) {
+        $choices = array(
+            array(
+                'label' => esc_html__( 'Select labels', 'gf-doboard-addon' ),
+                'value' => '',
+            ),
+        );
+        if (!$account_id || !$session_id) {
+            return $choices;
+        }
+        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+            require_once( 'includes/class-gf-doboard-api.php' );
+        }
+        $doBoard = new GF_doBoard_API();
+        $labels = $doBoard->get_labels($account_id, $session_id);
+
+        if (!empty($labels) && is_array($labels)) {
+            foreach ($labels as $label) {
+                $choices[] = array(
+                    'label' => $label['name'],
+                    'value' => $label['label_id'],
+                );
+            }
+        }
+        return $choices;
+    }
+
+    public function can_create_feed() {
+        $result = $this->initialize_api();
+        return $result;
+    }
+
+    public function doboard_send ( $entry, $form ) {
         try {
             $task_id = $this->doboard_add_task($entry, $form);
         } catch (\Exception $e) {
-            $this->doboard_auth();
+            $this->initialize_api();
             $task_id = $this->doboard_add_task($entry, $form);
         }
         if (isset($task_id['data']['task_id'])) {
@@ -356,16 +512,35 @@ class GFdoBoard_AddOn extends GFAddOn {
      * @param array $entry The entry data.
      * @param array $form  The form data.
      */
-    public function doboard_add_task($entry, $form) {
+    public function doboard_add_task( $entry, $form ) {
         if ( ! class_exists( 'GF_doBoard_API' ) ) {
             require_once plugin_dir_path(__FILE__) . 'includes/class-gf-doboard-api.php';
         }
-        $project        = $this->get_plugin_setting( 'doBoard_project_id' );
-        $session_id     = $this->get_plugin_setting( 'doBoard_session_id' );
-        $user_id        = $this->get_plugin_setting( 'doBoard_user_id' );
-        $account_id     = $this->get_plugin_setting( 'doBoard_account_id' );
-        $task_board_id  = $this->get_plugin_setting('doBoard_task_board_id');
-        $doBoard_label  = $this->get_plugin_setting('doBoard_label_ids');
+
+        // Getting settings
+        $feeds = $this->get_feeds( $form['id'] );
+        $settings = array();
+        foreach ( $feeds as $feed ) {
+            if ( $this->is_feed_condition_met( $feed, $form, $entry ) ) {
+                $settings = $feed['meta'];
+                break;
+            }
+        }
+
+        $project        = $settings['doBoard_project_id'];
+        $session_id     = $settings['doBoard_session_id'];
+        $user_id        = $settings['doBoard_user_id'];
+        $account_id     = $settings['doBoard_account_id'];
+        $task_board_id  = $settings['doBoard_task_board_id'];
+        $doBoard_label  = $settings['doBoard_label_ids'];
+
+        // Adding label_ids to the array if it is a string
+        if (!is_array($doBoard_label) && !empty($doBoard_label)) {
+            $doBoard_label = array_map('trim', explode(',', $doBoard_label));
+        } elseif (empty($doBoard_label)) {
+            $doBoard_label = array();
+        }
+
         $fields_string = $this->doboard_get_entry_fields_string($entry, $form, 'title_name', " ");
         $title_name = mb_substr($fields_string, 0, 100) . (mb_strlen($fields_string) > 15 ? '...' : '');
 
@@ -374,24 +549,15 @@ class GFdoBoard_AddOn extends GFAddOn {
             'name'       => $title_name,
             'user_id'    => $user_id,
             'project_id' => $project,
-            'track_id' => $task_board_id,
-            'label_ids' => $doBoard_label,
+            'track_id'   => $task_board_id,
+            'label_ids'  => $doBoard_label,
         );
 
         $doBoard = new GF_doBoard_API();
         try {
             $add_task_doBoard_result = $doBoard->add_task($data, $account_id);
         } catch (Exception $e) {
-            if (strpos($e->getMessage(), 'Unauthorized') !== false) {
-                $this->doboard_auth();
-                $session_id = $this->get_plugin_setting( 'doBoard_session_id' );
-                $user_id    = $this->get_plugin_setting( 'doBoard_user_id' );
-                $data['session_id'] = $session_id;
-                $data['user_id'] = $user_id;
-                $add_task_doBoard_result = $doBoard->add_task($data, $account_id);
-            } else {
-                throw $e;
-            }
+            throw $e;
         }
 
         if ( is_wp_error( $add_task_doBoard_result ) ) {
@@ -401,16 +567,31 @@ class GFdoBoard_AddOn extends GFAddOn {
         return $add_task_doBoard_result;
     }
 
+    /**
+     * Summary of doboard_add_comment
+     * @param mixed $task_id
+     * @param mixed $entry
+     * @param mixed $form
+     * @return void
+     */
     public function doboard_add_comment( $task_id, $entry, $form ) {
-        $project    = $this->get_plugin_setting( 'doBoard_project_id' );
-        $session_id = $this->get_plugin_setting( 'doBoard_session_id' );
-        $comment = $this->doboard_get_entry_fields_string($entry, $form, 'comment', "<br>");
-        $account_id = $this->get_plugin_setting( 'doBoard_account_id' );
+        $feeds = $this->get_feeds( $form['id'] );
+        $settings = array();
+        foreach ( $feeds as $feed ) {
+            if ( $this->is_feed_condition_met( $feed, $form, $entry ) ) {
+                $settings = $feed['meta'];
+                break;
+            }
+        }
+        $project    = $settings['doBoard_project_id'];
+        $session_id = $settings['doBoard_session_id'];
+        $comment    = $this->doboard_get_entry_fields_string($entry, $form, 'comment', "<br>");
+        $account_id = $settings['doBoard_account_id'];
 
         $data = array(
             'session_id' => $session_id,
-            'task_id' => $task_id,
-            'comment' => $comment,
+            'task_id'    => $task_id,
+            'comment'    => $comment,
             'project_id' => $project,
         );
 
@@ -422,7 +603,7 @@ class GFdoBoard_AddOn extends GFAddOn {
         }
     }
 
-    protected function doboard_get_entry_fields_string($entry, $form, $type_string, $separator = "<br>") {
+    protected function doboard_get_entry_fields_string( $entry, $form, $type_string, $separator = "<br>" ) {
         $result = [];
         $used_values = [];
         if ($type_string === 'comment') {
@@ -469,4 +650,25 @@ class GFdoBoard_AddOn extends GFAddOn {
         }
         return implode($separator, $result);
     }
+
+    /**
+     * Returns the columns for the feed list.
+     * @return array{feed_name: mixed}
+     */
+    public function feed_list_columns() {
+        return array(
+            'feed_name' => esc_html__( 'Feed Name', 'gf-doboard-addon' ),
+        );
+    }
+
+    /**
+     * Returns the value for the feed name column.
+     *
+     * @param array $feed The feed data.
+     * @return string The feed name or a placeholder if not set.
+     */
+    public function get_column_value_feed_name( $feed ) {
+        return rgar( $feed['meta'], 'feed_name' ) ? $feed['meta']['feed_name'] : esc_html__( '(No name)', 'gf-doboard-addon' );
+    }
+
 }
