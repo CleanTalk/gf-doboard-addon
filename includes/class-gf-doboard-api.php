@@ -60,14 +60,14 @@ class GF_doBoard_API {
         $response = wp_remote_request( $url, $args );
 
         if ( is_wp_error( $response ) ) {
-            throw new Exception( $response->get_error_message() );
+            throw new Exception( esc_html($response->get_error_message()) );
         }
 
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( $code !== wp_remote_retrieve_response_code( $response ) ) {
             $message = isset( $body['error'] ) && ! empty( $body['error'] ) ? $body['error'] : wp_remote_retrieve_response_message( $response );
-            throw new Exception( $message );
+            throw new Exception( esc_html($message) );
         }
 
         return $body;
@@ -119,7 +119,7 @@ class GF_doBoard_API {
 
     public function add_task($data, $account_id ) {
         $response = $this->make_request(
-            $account_id . '/task_add', 
+            $account_id . '/task_add',
             $data,
             'POST',
             200
@@ -130,7 +130,7 @@ class GF_doBoard_API {
 
     public function add_comment($data, $account_id ) {
         $response = $this->make_request(
-            $account_id . '/comment_add', 
+            $account_id . '/comment_add',
             $data,
             'POST',
             200
