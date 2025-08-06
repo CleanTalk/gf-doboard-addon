@@ -1,4 +1,4 @@
-=== Gravity Forms doBoard Add-On ===
+=== CleanTalk doBoard Add-On for Gravity Forms ===
 Contributors: AntonV1211, shagimuratov, Glomberg, alexandergull, svfcode
 Donate link: https://doboard.com/
 Tags: gravityforms, doboard, forms, automation, project management

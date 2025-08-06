@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Plugin Name: Gravity Forms doBoard Add-On
+ * Plugin Name: CleanTalk doBoard Add-On for Gravity Forms
  * Plugin URI: https://www.gravityforms.com
  * Description: Integrates Gravity Forms with doBoard, сreates tasks in the doBoard task board for each submission of forms
  * Version: 1.0.1

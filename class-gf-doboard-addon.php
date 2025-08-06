@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 GFForms::include_feed_addon_framework();
 /**
- * Gravity Forms doBoard Add-On
+ * CleanTalk doBoard Add-On for Gravity Forms
  *
  * @package     GravityForms
  * @subpackage  doBoard Add-On
