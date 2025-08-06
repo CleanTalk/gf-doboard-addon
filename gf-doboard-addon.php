@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Author URI: https://doboard.com/
  * Text Domain: gf-doboard-addon
  * Domain Path: /languages
+ * License: GPLv2 or later
  */
 
 define( 'GF_DOBOARD_VERISON', '1.0.1' );
