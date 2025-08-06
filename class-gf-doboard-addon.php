@@ -107,7 +107,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
 
     /**
      * Summary of api
-     * @var 
+     * @var
      */
     protected $api = null;
 
@@ -199,7 +199,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
 		if ( null === self::$_instance ) {
 			self::$_instance = new self;
 		}
-        
+
 		return self::$_instance;
 	}
 
@@ -253,7 +253,6 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      */
     public function feed_settings_fields() {
         $current_settings = $this->get_current_settings();
-        error_log('Current feed settings: ' . print_r($current_settings, true));
         $auth_data = $this->get_auth_data_for_feed_fields();
         $accounts = $this->get_accounts_for_feed_setting();
         $default_account_id = '';
