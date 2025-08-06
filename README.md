@@ -32,6 +32,10 @@ Perfect for automating the processing of leads, orders, support requests, or any
 
 If you have questions or suggestions, contact us at [welcome@cleantalk.org](mailto:welcome@cleantalk.org) or use the [feedback form](https://doboard.com/).
 
+## License
+
+This plugin is licensed under the GNU General Public License v2 or later. See the [LICENSE](LICENSE.txt) file for details.
+
 ## Changelog
 
 ### 1.0

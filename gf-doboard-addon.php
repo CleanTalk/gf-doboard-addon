@@ -7,14 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: Gravity Forms doBoard Add-On
  * Plugin URI: https://www.gravityforms.com
  * Description: Integrates Gravity Forms with doBoard, сreates tasks in the doBoard task board for each submission of forms
- * Version: 1.0
+ * Version: 1.0.1
  * Author: CleanTalk - Gravity Forms doBoard Add-On <welcome@cleantalk.org>
  * Author URI: https://doboard.com/
  * Text Domain: gf-doboard-addon
  * Domain Path: /languages
  */
 
-define( 'GF_DOBOARD_VERISON', '1.0' );
+define( 'GF_DOBOARD_VERISON', '1.0.1' );
 
 // If Gravity Forms is loaded, bootstrap the doBoard Add-On.
 add_action( 'gform_loaded', array( 'GF_doBoard_Bootstrap', 'load' ), 5 );
