@@ -123,30 +123,39 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         add_filter('gform_pre_process_feed_settings_' . $this->_slug, array($this, 'fix_label_ids_setting'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
         add_action('gform_after_submission', array($this, 'doboard_send_after_submission'), 10, 2);
-        if (isset($_POST['_gform_setting_doBoard_label_ids']) && !is_array($_POST['_gform_setting_doBoard_label_ids'])) {
-            $_POST['_gform_setting_doBoard_label_ids'] = array($_POST['_gform_setting_doBoard_label_ids']);
-        }
 
         add_action('wp_ajax_gf_doboard_get_projects', function(){
-            $account_id = sanitize_text_field($_POST['account_id']);
-            $session_id = sanitize_text_field($_POST['session_id']);
+            check_admin_referer( 'gform_settings_save', 'gform_settings_save_nonce' );
+            if (!isset($_POST['account_id']) || !isset($_POST['session_id'])) {
+                return;
+            }
+            $account_id = sanitize_text_field(wp_unslash($_POST['account_id']));
+            $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
             $addon = GFdoBoard_AddOn::get_instance();
             $projects = $addon->get_projects_for_feed_setting($account_id, $session_id);
             wp_send_json_success($projects);
         });
 
         add_action('wp_ajax_gf_doboard_get_task_boards', function(){
-            $account_id = sanitize_text_field($_POST['account_id']);
-            $session_id = sanitize_text_field($_POST['session_id']);
-            $project_id = sanitize_text_field($_POST['project_id']);
+            check_admin_referer( 'gform_settings_save', 'gform_settings_save_nonce' );
+            if (!isset($_POST['account_id']) || !isset($_POST['session_id']) || !isset($_POST['project_id'])) {
+                return;
+            }
+            $account_id = sanitize_text_field(wp_unslash($_POST['account_id']));
+            $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
+            $project_id = sanitize_text_field(wp_unslash($_POST['project_id']));
             $addon = GFdoBoard_AddOn::get_instance();
             $boards = $addon->get_task_boards_for_feed_setting($account_id, $session_id, $project_id);
             wp_send_json_success($boards);
         });
 
         add_action('wp_ajax_gf_doboard_get_labels', function(){
-            $account_id = sanitize_text_field($_POST['account_id']);
-            $session_id = sanitize_text_field($_POST['session_id']);
+            check_admin_referer( 'gform_settings_save', 'gform_settings_save_nonce' );
+            if (!isset($_POST['account_id']) || !isset($_POST['session_id'])) {
+                return;
+            }
+            $account_id = sanitize_text_field(wp_unslash($_POST['account_id']));
+            $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
             $addon = GFdoBoard_AddOn::get_instance();
             $labels = $addon->get_labels_for_feed_setting($account_id, $session_id);
             wp_send_json_success($labels);
@@ -560,7 +569,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         }
 
         if ( is_wp_error( $add_task_doBoard_result ) ) {
-            error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_task_doBoard_result->get_error_message() );
+            if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_task_doBoard_result->get_error_message() );
+            }
         }
 
         return $add_task_doBoard_result;
@@ -598,7 +610,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         $add_comment_doBoard_result = $doBoard->add_comment($data, $account_id);
 
         if ( is_wp_error( $add_comment_doBoard_result ) ) {
-            error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_comment_doBoard_result->get_error_message() );
+            if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_comment_doBoard_result->get_error_message() );
+            }
         }
     }
 
