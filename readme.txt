@@ -4,7 +4,7 @@ Donate link: https://doboard.com/
 Tags: gravityforms, doboard, forms, automation, project management
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,10 @@ You can find your token in your doBoard account settings under API section.
 3. Task created in doBoard.
 
 == Changelog ==
+
+= 1.0.2 =
+* Upd. Implemented changes required by the WordPress review team..
+* Fix. Exceptions on task/comment adding when the doBoard license is inactive.
 
 = 1.0.1 =
 

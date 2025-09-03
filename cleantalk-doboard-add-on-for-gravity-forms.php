@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: CleanTalk doBoard Add-On for Gravity Forms
  * Plugin URI: https://www.gravityforms.com
  * Description: Integrates Gravity Forms with doBoard, сreates tasks in the doBoard task board for each submission of forms
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: CleanTalk - Gravity Forms doBoard Add-On
  * Author URI: https://doboard.com/
  * Text Domain: cleantalk-doboard-add-on-for-gravity-forms
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * License: GPLv2 or later
  */
 
-define('CTGF_DOBOARD_VERISON', '1.0.1' );
+define('CTGF_DOBOARD_VERISON', '1.0.2' );
 
 // If Gravity Forms is loaded, bootstrap the doBoard Add-On.
 add_action( 'gform_loaded', array( 'CTGF_doBoard_Bootstrap', 'load' ), 5 );
