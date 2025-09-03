@@ -124,7 +124,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
         add_action('gform_after_submission', array($this, 'doboard_send_after_submission'), 10, 2);
 
-        add_action('wp_ajax_gf_doboard_get_projects', function(){
+        add_action('wp_ajax_ct_gf_doboard_get_projects', function(){
             check_admin_referer( 'gform_settings_save', 'gform_settings_save_nonce' );
             if (!isset($_POST['account_id']) || !isset($_POST['session_id'])) {
                 return;
@@ -136,7 +136,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             wp_send_json_success($projects);
         });
 
-        add_action('wp_ajax_gf_doboard_get_task_boards', function(){
+        add_action('wp_ajax_ct_gf_doboard_get_task_boards', function(){
             check_admin_referer( 'gform_settings_save', 'gform_settings_save_nonce' );
             if (!isset($_POST['account_id']) || !isset($_POST['session_id']) || !isset($_POST['project_id'])) {
                 return;
@@ -149,7 +149,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             wp_send_json_success($boards);
         });
 
-        add_action('wp_ajax_gf_doboard_get_labels', function(){
+        add_action('wp_ajax_ct_gf_doboard_get_labels', function(){
             check_admin_referer( 'gform_settings_save', 'gform_settings_save_nonce' );
             if (!isset($_POST['account_id']) || !isset($_POST['session_id'])) {
                 return;

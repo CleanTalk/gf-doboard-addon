@@ -46,6 +46,6 @@ class GF_doBoard_Bootstrap {
  * @see    GFdoBoard_AddOn::get_instance()
  * @return object GFdoBoard_AddOn
  */
-function gf_doboard() {
+function ct_gf_doboard() {
     return GFdoBoard_AddOn::get_instance();
 }

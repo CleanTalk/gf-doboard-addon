@@ -20,7 +20,7 @@ jQuery(document).ready(function($){
 
         // AJAX-request to get projects
         $.post(ajaxurl, {
-            action: 'gf_doboard_get_projects',
+            action: 'ct_gf_doboard_get_projects',
             account_id: account_id,
             session_id: session_id,
             gform_settings_save_nonce: nonce
@@ -44,7 +44,7 @@ jQuery(document).ready(function($){
         $('select[name="_gform_setting_doBoard_task_board_id"]').html('<option>Loading...</option>').prop('disabled', true);
 
         $.post(ajaxurl, {
-            action: 'gf_doboard_get_task_boards',
+            action: 'ct_gf_doboard_get_task_boards',
             account_id: account_id,
             session_id: session_id,
             project_id: project_id,
@@ -68,7 +68,7 @@ jQuery(document).ready(function($){
         $('select[name="_gform_setting_doBoard_label_ids[]"]').html('<option>Loading...</option>').prop('disabled', true);
 
         $.post(ajaxurl, {
-            action: 'gf_doboard_get_labels',
+            action: 'ct_gf_doboard_get_labels',
             account_id: account_id,
             session_id: session_id,
             gform_settings_save_nonce: nonce
