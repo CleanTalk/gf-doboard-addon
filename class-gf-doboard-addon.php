@@ -505,7 +505,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             $this->initialize_api();
             $task_id = $this->doboard_add_task($entry, $form);
         }
-        if (isset($task_id['data']['task_id'])) {
+        if (false !== $task_id && isset($task_id['data'], $task_id['data']['task_id'])) {
             $this->doboard_add_comment($task_id['data']['task_id'], $entry, $form);
         }
         return true;
@@ -519,6 +519,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      *
      * @param array $entry The entry data.
      * @param array $form  The form data.
+     * @return array|false The result of adding a task to doBoard or false on failure.
      */
     public function doboard_add_task( $entry, $form ) {
         if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
@@ -562,20 +563,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         );
 
         $doBoard = new CTGF_doBoard_API();
-        try {
-            $add_task_doBoard_result = $doBoard->add_task($data, $account_id);
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        if ( is_wp_error( $add_task_doBoard_result ) ) {
-            if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_task_doBoard_result->get_error_message() );
-            }
-        }
-
-        return $add_task_doBoard_result;
+        return $doBoard->add_task($data, $account_id);
     }
 
     /**
@@ -607,14 +595,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         );
 
         $doBoard = new CTGF_doBoard_API();
-        $add_comment_doBoard_result = $doBoard->add_comment($data, $account_id);
-
-        if ( is_wp_error( $add_comment_doBoard_result ) ) {
-            if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $add_comment_doBoard_result->get_error_message() );
-            }
-        }
+        $doBoard->add_comment($data, $account_id);
     }
 
     protected function doboard_get_entry_fields_string( $entry, $form, $type_string, $separator = "<br>" ) {

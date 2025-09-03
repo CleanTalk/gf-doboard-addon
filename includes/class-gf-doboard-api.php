@@ -66,7 +66,7 @@ class CTGF_doBoard_API {
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( $code !== wp_remote_retrieve_response_code( $response ) ) {
-            $message = isset( $body['error'] ) && ! empty( $body['error'] ) ? $body['error'] : wp_remote_retrieve_response_message( $response );
+            $message = isset( $body['error_message'] ) && ! empty( $body['error_message'] ) ? esc_html($body['error_message']) : wp_remote_retrieve_response_message( $response );
             throw new Exception( esc_html($message) );
         }
 
@@ -118,23 +118,59 @@ class CTGF_doBoard_API {
     }
 
     public function add_task($data, $account_id ) {
-        $response = $this->make_request(
-            $account_id . '/task_add',
-            $data,
-            'POST',
-            200
-        );
+        $exception = false;
+        try {
+            $response = $this->make_request(
+                $account_id . '/task_add',
+                $data,
+                'POST',
+                200
+            );
+        } catch (\Exception $e) {
+            $exception = $e->getMessage();
+            $response = false;
+        }
 
-        return $response;
+        return $this->validateResponse($response, $exception);
     }
 
     public function add_comment($data, $account_id ) {
-        $response = $this->make_request(
-            $account_id . '/comment_add',
-            $data,
-            'POST',
-            200
-        );
+        $exception = false;
+        try {
+            $response = $this->make_request(
+                $account_id . '/comment_add',
+                $data,
+                'POST',
+                200
+            );
+        } catch (\Exception $e) {
+            $exception = $e->getMessage();
+            $response = false;
+        }
+
+        return $this->validateResponse($response, $exception);
+    }
+
+    private function validateResponse($response, $exception) {
+
+        if (!empty($exception)) {
+            $response = false;
+        }
+
+        if (is_wp_error( $response ) ) {
+            $exception = $response->get_error_message();
+            $response = false;
+        }
+
+        if (false !== $exception) {
+            if (!is_string($exception) || empty($exception)) {
+                $exception = 'unknown error';
+            }
+            if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                error_log( __METHOD__ . '(): Error sending data to doBoard: ' . $exception );
+            }
+        }
 
         return $response;
     }
