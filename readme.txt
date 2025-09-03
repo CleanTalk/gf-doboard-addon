@@ -69,3 +69,27 @@ Initial release
 == Support ==
 
 If you have questions or suggestions, contact us at welcome@cleantalk.org.
+
+== External services ==
+
+This plugin integrates with api.doboard.com service. By using this plugin, you agree to <a href="https://doboard.com/terms-of-use/">terms</a> and <a href="https://doboard.com/privacy-policy/">privacy policy</a> of doBoard service.
+
+Cases of data transmission to this service:
+
+1. User Authentication
+Data Sent: Only the user_token as a URL query parameter.
+
+2. Fetching Projects
+Data Sent: The account_id (in the path) and session_id (as a URL query parameter).
+
+3. Fetching Task Boards (Tracks)
+Data Sent: The account_id (path), session_id, the fixed parameter status=ACTIVE, and an optional project_id (all as URL query parameters).
+
+4. Fetching Labels
+Data Sent: The account_id (path) and session_id (as a URL query parameter).
+
+5. Adding a Task
+Data Sent: The account_id (in the path). The task data (an array of properties like title, description, etc.) is sent in the body of the POST request, which is encoded as JSON.
+
+6. Adding a Comment
+Data Sent: The account_id (in the path). The comment data (e.g., task_id, message, etc.) is sent in the body of the POST request, which is encoded as JSON.
