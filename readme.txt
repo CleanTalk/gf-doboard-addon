@@ -29,7 +29,7 @@ User-friendly settings interface in the WordPress admin
 
 == Installation ==
 
-Upload the plugin files to the /wp-content/plugins/gf-doboard-addon directory, or install the plugin through the WordPress plugins screen directly.
+Upload the plugin files to the /wp-content/plugins/cleantalk-doboard-add-on-for-gravity-forms directory, or install the plugin through the WordPress plugins screen directly.
 
 Activate the plugin through the 'Plugins' screen in WordPress.
 

@@ -22,7 +22,7 @@ Perfect for automating the processing of leads, orders, support requests, or any
 
 ## Installation
 
-1. Upload the plugin files to the `/wp-content/plugins/gf-doboard-addon` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/cleantalk-doboard-add-on-for-gravity-forms` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to **Gravity Forms Settings → doBoard** and enter your doBoard user token (global setting).
 4. For each form, go to **Forms → Form Settings → doBoard Feeds** and configure the integration options (account, project, board, labels, etc.).

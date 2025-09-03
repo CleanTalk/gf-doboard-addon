@@ -40,7 +40,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      * @access protected
      * @var    string $_slug Contains the slug, defined from breeze.php
      */
-    protected $_slug = 'gf-doboard-addon';
+    protected $_slug = 'cleantalk-doboard-add-on-for-gravity-forms';
 
     /**
      * Defines the full path to the Add-On.
@@ -49,7 +49,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      * @access protected
      * @var    string $_path Contains the path, defined
      */
-    protected $_path = 'gf-doboard-addon/gf-doboard-addon.php';
+    protected $_path = 'cleantalk-doboard-add-on-for-gravity-forms/cleantalk-doboard-add-on-for-gravity-forms.php';
 
     /**
      * Defines the full path to the Add-On.
@@ -223,29 +223,29 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
     public function plugin_settings_fields() {
         return array(
             array(
-                'title'  => esc_html__( 'doBoard Settings', 'gf-doboard-addon' ),
+                'title'  => esc_html__( 'doBoard Settings', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'description' => wp_kses_post(
-                    "<a href='https://doboard.com/' target='_blank' style='font-weight: bold;'>" . esc_html__( "doBoard.com", 'gf-doboard-addon' ) . "</a> "
-                    . esc_html__( 'is an online task management app that helps you convert messages submitted through forms into actionable tasks.', 'gf-doboard-addon' )
-                    . " <a href='https://doboard.com/' target='_blank'>" . esc_html__( 'Learn more', 'gf-doboard-addon' ) . "</a>"
+                    "<a href='https://doboard.com/' target='_blank' style='font-weight: bold;'>" . esc_html__( "doBoard.com", 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a> "
+                    . esc_html__( 'is an online task management app that helps you convert messages submitted through forms into actionable tasks.', 'cleantalk-doboard-add-on-for-gravity-forms' )
+                    . " <a href='https://doboard.com/' target='_blank'>" . esc_html__( 'Learn more', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                 ),
                 'fields' => array(
                     array(
                         'name'     => 'doBoard_user_token',
-                        'label'    => esc_html__( 'User Token', 'gf-doboard-addon' ),
+                        'label'    => esc_html__( 'User Token', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'text',
                         'class'    => 'medium',
                         'required' => true,
-                        'tooltip'  => esc_html__( 'Enter your doBoard user token.', 'gf-doboard-addon'),
+                        'tooltip'  => esc_html__( 'Enter your doBoard user token.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                         'description' => wp_kses_post(
-                            esc_html__( 'You can find your user token in your', 'gf-doboard-addon' ) .
-                            " <a href='https://cleantalk.org/my/profile' target='_blank'>" . esc_html__( 'doBoard account settings.', 'gf-doboard-addon' ) . "</a>"
+                            esc_html__( 'You can find your user token in your', 'cleantalk-doboard-add-on-for-gravity-forms' ) .
+                            " <a href='https://cleantalk.org/my/profile' target='_blank'>" . esc_html__( 'doBoard account settings.', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                         ),
                     ),
                     array(
                         'type'     => 'save',
                         'messages' => array(
-                            'success' => esc_html__( 'Settings updated.', 'gf-doboard-addon' ),
+                            'success' => esc_html__( 'Settings updated.', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         ),
                     ),
                 ),
@@ -276,54 +276,54 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
 
         return array(
             array(
-                'title'  => esc_html__( 'doBoard Feeds', 'gf-doboard-addon' ),
+                'title'  => esc_html__( 'doBoard Feeds', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'fields' => array(
                     array(
                         'name'      => 'feed_name',
-                        'label'     => esc_html__( 'Feed Name', 'gf-doboard-addon' ),
+                        'label'     => esc_html__( 'Feed Name', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'      => 'text',
                         'class'     => 'medium',
                         'required'  => true,
-                        'tooltip'   => esc_html__( 'Enter a name to identify this feed.', 'gf-doboard-addon' ),
+                        'tooltip'   => esc_html__( 'Enter a name to identify this feed.', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                     ),
                     array(
                         'name'     => 'doBoard_account_id',
-                        'label'    => esc_html__( 'Account ID', 'gf-doboard-addon' ),
+                        'label'    => esc_html__( 'Account ID', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $accounts,
                         'class'    => 'medium',
                         'required' => true,
                         'default_value' => $default_account_id,
                         'value'    => $selected_account_id,
-                        'tooltip'  => esc_html__( 'Select the doBoard account to which the tasks will be sent.', 'gf-doboard-addon'),
+                        'tooltip'  => esc_html__( 'Select the doBoard account to which the tasks will be sent.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
                         'name'     => 'doBoard_project_id',
-                        'label'    => esc_html__( 'Project ID', 'gf-doboard-addon' ),
+                        'label'    => esc_html__( 'Project ID', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $this->get_projects_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
                         'class'    => 'medium',
                         'required' => true,
-                        'tooltip'  => esc_html__( 'Enter the doBoard project ID where tasks will be created.', 'gf-doboard-addon'),
+                        'tooltip'  => esc_html__( 'Enter the doBoard project ID where tasks will be created.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
                         'name'     => 'doBoard_task_board_id',
-                        'label'    => esc_html__( 'Task Board ID', 'gf-doboard-addon' ),
+                        'label'    => esc_html__( 'Task Board ID', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $this->get_task_boards_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
                         'class'    => 'medium',
                         'required' => false,
-                        'tooltip'  => esc_html__( 'Select the doBoard task board where tasks will be created.', 'gf-doboard-addon'),
+                        'tooltip'  => esc_html__( 'Select the doBoard task board where tasks will be created.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
                         'name'     => 'doBoard_label_ids',
-                        'label'    => esc_html__( 'Label IDs', 'gf-doboard-addon' ),
+                        'label'    => esc_html__( 'Label IDs', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $this->get_labels_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
                         'class'    => 'medium',
                         'multiple' => true,
                         'required' => false,
-                        'tooltip'  => esc_html__( 'Select one or more doBoard labels to assign to the tasks.', 'gf-doboard-addon'),
+                        'tooltip'  => esc_html__( 'Select one or more doBoard labels to assign to the tasks.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
                         'name'  => 'doBoard_session_id',
@@ -368,7 +368,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
     protected function get_accounts_for_feed_setting() {
         $choices = array(
             array(
-                'label' => esc_html__( 'Select an account', 'gf-doboard-addon' ),
+                'label' => esc_html__( 'Select an account', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'value' => '',
             ),
         );
@@ -415,7 +415,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
     protected function get_projects_for_feed_setting($account_id, $session_id) {
         $choices = array(
             array(
-                'label' => esc_html__( 'Select a project', 'gf-doboard-addon' ),
+                'label' => esc_html__( 'Select a project', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'value' => '',
             ),
         );
@@ -442,7 +442,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
     protected function get_task_boards_for_feed_setting($account_id, $session_id, $project_id = null) {
         $choices = array(
             array(
-                'label' => esc_html__( 'Select a task board', 'gf-doboard-addon' ),
+                'label' => esc_html__( 'Select a task board', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'value' => '',
             ),
         );
@@ -469,7 +469,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
     protected function get_labels_for_feed_setting($account_id, $session_id) {
         $choices = array(
             array(
-                'label' => esc_html__( 'Select labels', 'gf-doboard-addon' ),
+                'label' => esc_html__( 'Select labels', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'value' => '',
             ),
         );
@@ -671,7 +671,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      */
     public function feed_list_columns() {
         return array(
-            'feed_name' => esc_html__( 'Feed Name', 'gf-doboard-addon' ),
+            'feed_name' => esc_html__( 'Feed Name', 'cleantalk-doboard-add-on-for-gravity-forms' ),
         );
     }
 
@@ -682,7 +682,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      * @return string The feed name or a placeholder if not set.
      */
     public function get_column_value_feed_name( $feed ) {
-        return rgar( $feed['meta'], 'feed_name' ) ? $feed['meta']['feed_name'] : esc_html__( '(No name)', 'gf-doboard-addon' );
+        return rgar( $feed['meta'], 'feed_name' ) ? $feed['meta']['feed_name'] : esc_html__( '(No name)', 'cleantalk-doboard-add-on-for-gravity-forms' );
     }
 
 }
