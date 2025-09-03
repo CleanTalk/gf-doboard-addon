@@ -15,16 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  * License: GPLv2 or later
  */
 
-define( 'GF_DOBOARD_VERISON', '1.0.1' );
+define('CTGF_DOBOARD_VERISON', '1.0.1' );
 
 // If Gravity Forms is loaded, bootstrap the doBoard Add-On.
-add_action( 'gform_loaded', array( 'GF_doBoard_Bootstrap', 'load' ), 5 );
+add_action( 'gform_loaded', array( 'CTGF_doBoard_Bootstrap', 'load' ), 5 );
 
 /**
- * Class GF_doBoard_Bootstrap
+ * Class CTGF_doBoard_Bootstrap
  * Handles the loading of the doBoard Add-On and registers with the Add-On Framework.
  */
-class GF_doBoard_Bootstrap {
+class CTGF_doBoard_Bootstrap {
 
     /**
      * If the Add-On Framework exists, doBoard Add-On is loaded.

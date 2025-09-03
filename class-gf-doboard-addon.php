@@ -22,7 +22,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
 	 * @access protected
 	 * @var    string $_version Contains the version, defined from breeze.php
 	 */
-    protected $_version = GF_DOBOARD_VERISON;
+    protected $_version = CTGF_DOBOARD_VERISON;
 
     /**
      * Defines the minimum Gravity Forms version required for the Breeze Add-On.
@@ -349,14 +349,14 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if ( is_object( $this->api ) ) {
             return true;
         }
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
         $user_token = $this->get_plugin_setting('doBoard_user_token');
         if ( empty( $user_token ) ) {
             return false;
         }
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $auth_result = $doBoard->auth($user_token);
         if ( !empty($auth_result['data']['accounts']) ) {
             $this->api = $doBoard;
@@ -376,10 +376,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$user_token) {
             return $choices;
         }
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $auth_result = $doBoard->auth($user_token);
         if (!empty($auth_result['data']['accounts']) && is_array($auth_result['data']['accounts'])) {
             foreach ($auth_result['data']['accounts'] as $acc) {
@@ -397,10 +397,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$user_token) {
             return array();
         }
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $auth_result = $doBoard->auth($user_token);
         if (!empty($auth_result['data'])) {
             return array(
@@ -422,10 +422,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$account_id || !$session_id) {
             return $choices;
         }
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $projects = $doBoard->get_projects($account_id, $session_id);
 
         if (!empty($projects) && is_array($projects)) {
@@ -449,10 +449,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$account_id || !$session_id) {
             return $choices;
         }
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $task_boards = $doBoard->get_task_boards($account_id, $session_id, $project_id);
 
         if (!empty($task_boards) && is_array($task_boards)) {
@@ -476,10 +476,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$account_id || !$session_id) {
             return $choices;
         }
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once( 'includes/class-gf-doboard-api.php' );
         }
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $labels = $doBoard->get_labels($account_id, $session_id);
 
         if (!empty($labels) && is_array($labels)) {
@@ -521,7 +521,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      * @param array $form  The form data.
      */
     public function doboard_add_task( $entry, $form ) {
-        if ( ! class_exists( 'GF_doBoard_API' ) ) {
+        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
             require_once plugin_dir_path(__FILE__) . 'includes/class-gf-doboard-api.php';
         }
 
@@ -561,7 +561,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             'label_ids'  => $doBoard_label,
         );
 
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         try {
             $add_task_doBoard_result = $doBoard->add_task($data, $account_id);
         } catch (Exception $e) {
@@ -606,7 +606,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             'project_id' => $project,
         );
 
-        $doBoard = new GF_doBoard_API();
+        $doBoard = new CTGF_doBoard_API();
         $add_comment_doBoard_result = $doBoard->add_comment($data, $account_id);
 
         if ( is_wp_error( $add_comment_doBoard_result ) ) {
