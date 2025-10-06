@@ -7,7 +7,7 @@
  * @package   GravityForms
  * @author    Cleantalk
 */
-class CTGF_doBoard_API {
+class CleantalkDoboardAddonForGravityFormsDoBoardAPI {
 
     /**
      * Defines the API token needed to access doBoard.

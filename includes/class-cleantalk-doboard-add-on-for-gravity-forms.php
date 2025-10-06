@@ -13,7 +13,7 @@ GFForms::include_feed_addon_framework();
  * @author      Cleantalk
  * @since       1.0
  */
-class GFdoBoard_AddOn extends GFFeedAddOn {
+class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
 
 	/**
 	 * Defines the version of the Breeze Add-On.
@@ -22,7 +22,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
 	 * @access protected
 	 * @var    string $_version Contains the version, defined from breeze.php
 	 */
-    protected $_version = CTGF_DOBOARD_VERISON;
+    protected $_version = CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__VERISON;
 
     /**
      * Defines the minimum Gravity Forms version required for the Breeze Add-On.
@@ -119,6 +119,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      */
     public function init() {
         parent::init();
+
         add_filter('gform_pre_validation_' . $this->_slug, array($this, 'fix_label_ids_setting'));
         add_filter('gform_pre_process_feed_settings_' . $this->_slug, array($this, 'fix_label_ids_setting'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
@@ -131,7 +132,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             }
             $account_id = sanitize_text_field(wp_unslash($_POST['account_id']));
             $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
-            $addon = GFdoBoard_AddOn::get_instance();
+            $addon = CleantalkDoboardAddonForGravityForms::get_instance();
             $projects = $addon->get_projects_for_feed_setting($account_id, $session_id);
             wp_send_json_success($projects);
         });
@@ -144,7 +145,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             $account_id = sanitize_text_field(wp_unslash($_POST['account_id']));
             $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
             $project_id = sanitize_text_field(wp_unslash($_POST['project_id']));
-            $addon = GFdoBoard_AddOn::get_instance();
+            $addon = CleantalkDoboardAddonForGravityForms::get_instance();
             $boards = $addon->get_task_boards_for_feed_setting($account_id, $session_id, $project_id);
             wp_send_json_success($boards);
         });
@@ -156,10 +157,23 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             }
             $account_id = sanitize_text_field(wp_unslash($_POST['account_id']));
             $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
-            $addon = GFdoBoard_AddOn::get_instance();
+            $addon = CleantalkDoboardAddonForGravityForms::get_instance();
             $labels = $addon->get_labels_for_feed_setting($account_id, $session_id);
             wp_send_json_success($labels);
         });
+    }
+
+    /**
+     * Get API class
+     * @return CleantalkDoboardAddonForGravityFormsDoBoardAPI
+     */
+    private function doBoardAPIFramework()
+    {
+        if ( ! class_exists('CleantalkDoboardAddonForGravityFormsDoBoardAPI') ) {
+            require_once( CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__API_CLASS_PATH );
+        }
+
+        return new CleantalkDoboardAddonForGravityFormsDoBoardAPI();
     }
 
     /**
@@ -180,14 +194,14 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
 
     public function enqueue_admin_styles() {
         wp_enqueue_style(
-            'gf-doboard-admin',
-            plugins_url( '/public/gf-doboard-admin.css', __FILE__ ),
+            'cleantalk-doboard-add-on-for-gravity-forms-css',
+            plugins_url( '/public/cleantalk-doboard-add-on-for-gravity-forms.css', __FILE__ ),
             array(),
             $this->_version
         );
         wp_enqueue_script(
-            'gf-doboard-admin-js',
-            plugins_url( '/public/gf-doboard-admin.js', __FILE__ ),
+            'cleantalk-doboard-add-on-for-gravity-forms-js',
+            plugins_url( '/cleantalk-doboard-add-on-for-gravity-forms.js', __FILE__ ),
             array('jquery'),
             $this->_version,
             true
@@ -271,8 +285,8 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                 break;
             }
         }
-        $feed_account_id = $this->get_setting('doBoard_account_id');
-        $selected_account_id = rgpost('feed_setting_doBoard_account_id') ?: $feed_account_id ?: $default_account_id;
+        $feed_account_id = $this->get_setting('doboard_account_id');
+        $selected_account_id = rgpost('feed_setting_doboard_account_id') ?: $feed_account_id ?: $default_account_id;
 
         return array(
             array(
@@ -287,7 +301,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                         'tooltip'   => esc_html__( 'Enter a name to identify this feed.', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                     ),
                     array(
-                        'name'     => 'doBoard_account_id',
+                        'name'     => 'doboard_account_id',
                         'label'    => esc_html__( 'Account ID', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $accounts,
@@ -298,7 +312,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                         'tooltip'  => esc_html__( 'Select the doBoard account to which the tasks will be sent.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
-                        'name'     => 'doBoard_project_id',
+                        'name'     => 'doboard_project_id',
                         'label'    => esc_html__( 'Project ID', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $this->get_projects_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
@@ -307,7 +321,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                         'tooltip'  => esc_html__( 'Enter the doBoard project ID where tasks will be created.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
-                        'name'     => 'doBoard_task_board_id',
+                        'name'     => 'doboard_task_board_id',
                         'label'    => esc_html__( 'Task Board ID', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $this->get_task_boards_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
@@ -316,7 +330,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                         'tooltip'  => esc_html__( 'Select the doBoard task board where tasks will be created.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
-                        'name'     => 'doBoard_label_ids',
+                        'name'     => 'doboard_label_ids',
                         'label'    => esc_html__( 'Label IDs', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'type'     => 'select',
                         'choices'  => $this->get_labels_for_feed_setting($selected_account_id, isset($auth_data['session_id']) ? $auth_data['session_id'] : ''),
@@ -326,7 +340,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                         'tooltip'  => esc_html__( 'Select one or more doBoard labels to assign to the tasks.', 'cleantalk-doboard-add-on-for-gravity-forms'),
                     ),
                     array(
-                        'name'  => 'doBoard_session_id',
+                        'name'  => 'doboard_session_id',
                         'type'  => 'hidden',
                         'value' => isset($auth_data['session_id']) ? $auth_data['session_id'] : '',
                     ),
@@ -349,15 +363,11 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if ( is_object( $this->api ) ) {
             return true;
         }
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once( 'includes/class-gf-doboard-api.php' );
-        }
         $user_token = $this->get_plugin_setting('doBoard_user_token');
         if ( empty( $user_token ) ) {
             return false;
         }
-        $doBoard = new CTGF_doBoard_API();
-        $auth_result = $doBoard->auth($user_token);
+        $auth_result = $this->doBoardAPIFramework()->auth($user_token);
         if ( !empty($auth_result['data']['accounts']) ) {
             $this->api = $doBoard;
             return true;
@@ -376,10 +386,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$user_token) {
             return $choices;
         }
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once( 'includes/class-gf-doboard-api.php' );
-        }
-        $doBoard = new CTGF_doBoard_API();
+        $doBoard = new CleantalkDoboardAddonForGravityFormsDoBoardAPI();
         $auth_result = $doBoard->auth($user_token);
         if (!empty($auth_result['data']['accounts']) && is_array($auth_result['data']['accounts'])) {
             foreach ($auth_result['data']['accounts'] as $acc) {
@@ -397,11 +404,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$user_token) {
             return array();
         }
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once( 'includes/class-gf-doboard-api.php' );
-        }
-        $doBoard = new CTGF_doBoard_API();
-        $auth_result = $doBoard->auth($user_token);
+        $auth_result = $this->doBoardAPIFramework()->auth($user_token);
         if (!empty($auth_result['data'])) {
             return array(
                 'session_id' => isset($auth_result['data']['session_id']) ? $auth_result['data']['session_id'] : '',
@@ -422,11 +425,8 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$account_id || !$session_id) {
             return $choices;
         }
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once( 'includes/class-gf-doboard-api.php' );
-        }
-        $doBoard = new CTGF_doBoard_API();
-        $projects = $doBoard->get_projects($account_id, $session_id);
+
+        $projects = $this->doBoardAPIFramework()->get_projects($account_id, $session_id);
 
         if (!empty($projects) && is_array($projects)) {
             foreach ($projects as $project) {
@@ -449,11 +449,8 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$account_id || !$session_id) {
             return $choices;
         }
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once( 'includes/class-gf-doboard-api.php' );
-        }
-        $doBoard = new CTGF_doBoard_API();
-        $task_boards = $doBoard->get_task_boards($account_id, $session_id, $project_id);
+
+        $task_boards = $this->doBoardAPIFramework()->get_task_boards($account_id, $session_id, $project_id);
 
         if (!empty($task_boards) && is_array($task_boards)) {
             foreach ($task_boards as $board) {
@@ -476,11 +473,8 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
         if (!$account_id || !$session_id) {
             return $choices;
         }
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once( 'includes/class-gf-doboard-api.php' );
-        }
-        $doBoard = new CTGF_doBoard_API();
-        $labels = $doBoard->get_labels($account_id, $session_id);
+
+        $labels = $this->doBoardAPIFramework()->get_labels($account_id, $session_id);
 
         if (!empty($labels) && is_array($labels)) {
             foreach ($labels as $label) {
@@ -522,10 +516,6 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
      * @return array|false The result of adding a task to doBoard or false on failure.
      */
     public function doboard_add_task( $entry, $form ) {
-        if ( ! class_exists( 'CTGF_doBoard_API' ) ) {
-            require_once plugin_dir_path(__FILE__) . 'includes/class-gf-doboard-api.php';
-        }
-
         // Getting settings
         $feeds = $this->get_feeds( $form['id'] );
         $settings = array();
@@ -536,12 +526,12 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             }
         }
 
-        $project        = $settings['doBoard_project_id'];
-        $session_id     = $settings['doBoard_session_id'];
+        $project        = $settings['doboard_project_id'];
+        $session_id     = $settings['doboard_session_id'];
         $user_id        = $settings['doBoard_user_id'];
-        $account_id     = $settings['doBoard_account_id'];
-        $task_board_id  = $settings['doBoard_task_board_id'];
-        $doBoard_label  = $settings['doBoard_label_ids'];
+        $account_id     = $settings['doboard_account_id'];
+        $task_board_id  = $settings['doboard_task_board_id'];
+        $doBoard_label  = $settings['doboard_label_ids'];
 
         // Adding label_ids to the array if it is a string
         if (!is_array($doBoard_label) && !empty($doBoard_label)) {
@@ -562,8 +552,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             'label_ids'  => $doBoard_label,
         );
 
-        $doBoard = new CTGF_doBoard_API();
-        return $doBoard->add_task($data, $account_id);
+        return $this->doBoardAPIFramework()->add_task($data, $account_id);
     }
 
     /**
@@ -582,10 +571,10 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
                 break;
             }
         }
-        $project    = $settings['doBoard_project_id'];
-        $session_id = $settings['doBoard_session_id'];
+        $project    = $settings['doboard_project_id'];
+        $session_id = $settings['doboard_session_id'];
         $comment    = $this->doboard_get_entry_fields_string($entry, $form, 'comment', "<br>");
-        $account_id = $settings['doBoard_account_id'];
+        $account_id = $settings['doboard_account_id'];
 
         $data = array(
             'session_id' => $session_id,
@@ -594,8 +583,7 @@ class GFdoBoard_AddOn extends GFFeedAddOn {
             'project_id' => $project,
         );
 
-        $doBoard = new CTGF_doBoard_API();
-        $doBoard->add_comment($data, $account_id);
+        $this->doBoardAPIFramework()->add_comment($data, $account_id);
     }
 
     protected function doboard_get_entry_fields_string( $entry, $form, $type_string, $separator = "<br>" ) {
