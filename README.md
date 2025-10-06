@@ -6,6 +6,43 @@ Seamlessly integrate Gravity Forms with doBoard — automatically create tasks f
 
 The **Gravity Forms doBoard Add-On** allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.  
 Perfect for automating the processing of leads, orders, support requests, or any other data collected via forms on your website.
+The Gravity Forms doBoard Add-On allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.
+Perfect for automating the processing of leads, orders, support requests, or any other data collected via forms on your website.
+
+### doBoard Integration for Gravity Forms
+
+Direct integration between Gravity Forms and doBoard:
+* Automated task creation from submitted forms
+* Organization of project contact information
+* Team collaboration features for sales and support teams
+* A simple alternative to heavyweight CRM platforms
+
+### Turn form submissions into organized workflows
+
+Link Gravity Forms with doBoard to automatically transform every submission into a structured task. If you're managing customer inquiries, processing service requests, or collecting lead information, this integration ensures nothing goes unnoticed.
+
+### Automatic Workflow Creation
+
+Every form entry goes directly into your doBoard workspace, creating tasks that can be assigned, tracked, and completed. No manual data transfer, no lost submissions—just a clear process from form to action.
+Simplified CRM Capabilities
+doBoard functions as a practical contact management system for teams who need CRM capabilities without the need for enterprise features:
+* Store contact information from submitted forms in organized projects
+* Track customer interactions through comments and task updates
+* Segment contacts by assigning them to specific projects or workflows
+* Track interaction history and follow-up status in a single dashboard
+
+### Simplified Lead Management
+
+Sales and support teams can systematically manage incoming leads. Each submission becomes a trackable task with attached contact information, making it easy to assign responsibility, set follow-up dates, and track conversion progress.
+
+### Easy Process Automation
+
+Create repeatable workflows for common business processes—quote requests, support tickets, partnership inquiries—by automatically routing form data to the appropriate team members. doBoard organizes all processes while your team focuses on execution.
+
+### What you get
+
+Ideal for small and medium teams managing customer relationships, service requests, or sales funnels through WordPress.
+
 
 ## Features
 
