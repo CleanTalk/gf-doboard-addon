@@ -193,19 +193,19 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
     }
 
     public function enqueue_admin_styles() {
-        wp_enqueue_style(
-            'cleantalk-doboard-add-on-for-gravity-forms-css',
-            plugins_url( '/public/cleantalk-doboard-add-on-for-gravity-forms.css', __FILE__ ),
-            array(),
-            $this->_version
-        );
-        wp_enqueue_script(
-            'cleantalk-doboard-add-on-for-gravity-forms-js',
-            plugins_url( '/cleantalk-doboard-add-on-for-gravity-forms.js', __FILE__ ),
-            array('jquery'),
-            $this->_version,
-            true
-        );
+            wp_enqueue_style(
+                'cleantalk-doboard-add-on-for-gravity-forms-css',
+                plugins_url( '../public/cleantalk-doboard-add-on-for-gravity-forms.css', __FILE__ ),
+                array(),
+                $this->_version
+            );
+            wp_enqueue_script(
+                'cleantalk-doboard-add-on-for-gravity-forms-js',
+                plugins_url( '../public/cleantalk-doboard-add-on-for-gravity-forms.js', __FILE__ ),
+                array('jquery'),
+                $this->_version,
+                true
+            );
     }
 
     /**
