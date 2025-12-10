@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 GFForms::include_feed_addon_framework();
 /**
- * CleanTalk doBoard Add-On for Gravity Forms
+ * doBoard Add-On for Gravity Forms
  *
  * @package     GravityForms
  * @subpackage  doBoard Add-On
@@ -120,6 +120,13 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
     public function init() {
         parent::init();
 
+        // Get the main plugin file path
+        $plugin_dir = dirname( dirname( $this->_full_path ) );
+        $main_plugin_file = $plugin_dir . '/' . basename( $this->_path );
+        $plugin_basename = plugin_basename( $main_plugin_file );
+        
+        add_filter('plugin_action_links_' . $plugin_basename, array($this, 'add_plugin_action_links'));
+        add_filter('plugin_row_meta', array($this, 'add_plugin_row_meta'), 10, 2);
         add_filter('gform_pre_validation_' . $this->_slug, array($this, 'fix_label_ids_setting'));
         add_filter('gform_pre_process_feed_settings_' . $this->_slug, array($this, 'fix_label_ids_setting'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
@@ -161,6 +168,44 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
             $labels = $addon->get_labels_for_feed_setting($account_id, $session_id);
             wp_send_json_success($labels);
         });
+    }
+
+    /**
+     * Add Settings link to plugin action links
+     *
+     * @since  1.0.4
+     * @access public
+     *
+     * @param array $links Existing plugin action links.
+     * @return array Modified plugin action links.
+     */
+    public function add_plugin_action_links( $links ) {
+        $settings_link = '<a href="' . admin_url( 'admin.php?page=gf_settings&subview=cleantalk-doboard-add-on-for-gravity-forms' ) . '">' . esc_html__( 'Settings', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
+        array_unshift( $links, $settings_link );
+        return $links;
+    }
+
+    /**
+     * Add Support link to plugin row meta
+     *
+     * @since  1.0.4
+     * @access public
+     *
+     * @param array  $plugin_meta Existing plugin row meta links.
+     * @param string $plugin_file Plugin file path.
+     * @return array Modified plugin row meta links.
+     */
+    public function add_plugin_row_meta( $plugin_meta, $plugin_file ) {
+        // Get the main plugin file path
+        $plugin_dir = dirname( dirname( $this->_full_path ) );
+        $main_plugin_file = $plugin_dir . '/' . basename( $this->_path );
+        $plugin_basename = plugin_basename( $main_plugin_file );
+        
+        if ( $plugin_basename === $plugin_file ) {
+            $support_link = '<a href="https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
+            $plugin_meta[] = $support_link;
+        }
+        return $plugin_meta;
     }
 
     /**
@@ -291,6 +336,9 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         return array(
             array(
                 'title'  => esc_html__( 'doBoard Feeds', 'cleantalk-doboard-add-on-for-gravity-forms' ),
+                'description' => wp_kses_post(
+                    "<a href='https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                ),
                 'fields' => array(
                     array(
                         'name'      => 'feed_name',
@@ -542,6 +590,9 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
 
         $fields_string = $this->doboard_get_entry_fields_string($entry, $form, 'title_name', " ");
         $title_name = mb_substr($fields_string, 0, 100) . (mb_strlen($fields_string) > 15 ? '...' : '');
+        if (!$title_name) {
+            $title_name = $form['title'];
+        }
 
         $data = array(
             'session_id' => $session_id,
@@ -652,6 +703,26 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
      */
     public function get_column_value_feed_name( $feed ) {
         return rgar( $feed['meta'], 'feed_name' ) ? $feed['meta']['feed_name'] : esc_html__( '(No name)', 'cleantalk-doboard-add-on-for-gravity-forms' );
+    }
+
+    /**
+     * Override feed list page to add support link description
+     *
+     * @since  1.0.4
+     * @access public
+     *
+     * @param array|null $form The form object.
+     */
+    public function feed_list_page( $form = null ) {
+        parent::feed_list_page( $form );
+        ?>
+        <div class="gform-settings-description" style="margin-top: 10px; padding: 0 20px;">
+            <?php echo wp_kses_post(
+                __('If you have any questions, please contact our support team at', 'cleantalk-doboard-add-on-for-gravity-forms') . ' ' .
+                "<a href='https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+            ); ?>
+        </div>
+        <?php
     }
 
 }

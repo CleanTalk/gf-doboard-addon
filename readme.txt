@@ -1,10 +1,10 @@
-=== CleanTalk doBoard Add-On for Gravity Forms ===
+=== doBoard Add-On for Gravity Forms ===
 Contributors: anton_cleantalk, cleantalk, glomberg, alexandergull, sergefcleantalk
 Donate link: https://doboard.com/
 Tags: gravityforms, doboard, forms, automation, project management
 Requires at least: 5.6
-Tested up to: 6.8
-Stable tag: 1.0.4
+Tested up to: 6.9
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,8 +12,12 @@ Seamlessly integrate Gravity Forms with doBoard — automatically create tasks f
 
 == Description ==
 
-The Gravity Forms doBoard Add-On allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.
+The doBoard Add-On for Gravity Forms allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.
 Perfect for automating the processing of leads, orders, support requests, or any other data collected via forms on your website.
+
+== Super short instruction to integrate form entries to doboard ==
+1. Navigate to Forms → Settings → doBoard to connect your forms to doBoard.com (just pust your token)
+2. In form settings select options, where you want to save entries
 
 = doBoard Integration for Gravity Forms =
 
