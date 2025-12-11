@@ -417,7 +417,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         }
         $auth_result = $this->doBoardAPIFramework()->auth($user_token);
         if ( !empty($auth_result['data']['accounts']) ) {
-            $this->api = $doBoard;
+            $this->api = new CleantalkDoboardAddonForGravityFormsDoBoardAPI();
             return true;
         }
         return false;
@@ -682,6 +682,11 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
                 }
             }
         }
+
+        if (!is_array($result)) {
+            return false;
+        }
+
         return implode($separator, $result);
     }
 
