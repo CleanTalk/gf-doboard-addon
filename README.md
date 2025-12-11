@@ -1,13 +1,17 @@
-# Gravity Forms doBoard Add-On
+# doBoard Add-On for Gravity Forms
 
 Seamlessly integrate Gravity Forms with doBoard — automatically create tasks for every form submission!
 
 ## Description
 
-The **Gravity Forms doBoard Add-On** allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.  
+The **doBoard Add-On for Gravity Forms** allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.  
 Perfect for automating the processing of leads, orders, support requests, or any other data collected via forms on your website.
-The Gravity Forms doBoard Add-On allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.
+The doBoard Add-On for Gravity Forms allows you to automatically create tasks in the doBoard project management system whenever a Gravity Forms form is submitted.
 Perfect for automating the processing of leads, orders, support requests, or any other data collected via forms on your website.
+
+## Super short instruction to integrate form entries to doboard
+1. Navigate to Forms → Settings → doBoard to connect your forms to doBoard.com (just pust your token)
+2. In form settings select options, where you want to save entries
 
 ### doBoard Integration for Gravity Forms
 
