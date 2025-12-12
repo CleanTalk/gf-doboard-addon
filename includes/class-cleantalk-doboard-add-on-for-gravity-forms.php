@@ -203,7 +203,8 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         
         if ( $plugin_basename === $plugin_file ) {
             $support_link = '<a href="https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
-            $plugin_meta[] = $support_link;
+            $review_link = '<a href="https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/reviews/#new-post" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Review', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
+            $plugin_meta[] = $support_link . ' | ' . $review_link;
         }
         return $plugin_meta;
     }
@@ -286,7 +287,6 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
                 'description' => wp_kses_post(
                     "<a href='https://doboard.com/' target='_blank' style='font-weight: bold;'>" . esc_html__( "doBoard.com", 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a> "
                     . esc_html__( 'is an online task management app that helps you convert messages submitted through forms into actionable tasks.', 'cleantalk-doboard-add-on-for-gravity-forms' )
-                    . " <a href='https://doboard.com/' target='_blank'>" . esc_html__( 'Learn more', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                 ),
                 'fields' => array(
                     array(
@@ -725,6 +725,10 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
             <?php echo wp_kses_post(
                 __('If you have any questions, please contact our support team at', 'cleantalk-doboard-add-on-for-gravity-forms') . ' ' .
                 "<a href='https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                . '. '
+                . "<a href='https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/reviews/#new-post' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Review', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                . ' ' .
+                __('the plugin.', 'cleantalk-doboard-add-on-for-gravity-forms')
             ); ?>
         </div>
         <?php
