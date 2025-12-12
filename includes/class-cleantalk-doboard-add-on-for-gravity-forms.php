@@ -202,7 +202,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         $plugin_basename = plugin_basename( $main_plugin_file );
         
         if ( $plugin_basename === $plugin_file ) {
-            $support_link = '<a href="https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
+            $support_link = '<a href="https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
             $review_link = '<a href="https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/reviews/#new-post" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Review', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
             $plugin_meta[] = $support_link . ' | ' . $review_link;
         }
@@ -337,7 +337,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
             array(
                 'title'  => esc_html__( 'doBoard Feeds', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                 'description' => wp_kses_post(
-                    "<a href='https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                    "<a href='https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                 ),
                 'fields' => array(
                     array(
@@ -724,7 +724,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         <div class="gform-settings-description" style="margin-top: 10px; padding: 0 20px;">
             <?php echo wp_kses_post(
                 __('If you have any questions, please contact our support team at', 'cleantalk-doboard-add-on-for-gravity-forms') . ' ' .
-                "<a href='https://wordpress.org/plugins/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                "<a href='https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                 . '. '
                 . "<a href='https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/reviews/#new-post' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Review', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                 . ' ' .
