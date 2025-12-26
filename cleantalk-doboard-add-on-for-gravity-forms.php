@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: doBoard Add-On for Gravity Forms
  * Plugin URI: https://www.gravityforms.com/add-ons/doboard-add-on-for-gravity-forms/
  * Description: Integrates Gravity Forms with doBoard, сreates tasks in the doBoard task board for each submission of forms
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: CleanTalk Inc
  * Author URI: https://doboard.com/
  * Text Domain: cleantalk-doboard-add-on-for-gravity-forms
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 
-define('CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__VERISON', '1.0.5' );
+define('CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__VERISON', '1.0.6' );
 define('CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__API_CLASS_PATH', __DIR__ .'/includes/class-cleantalk-doboard-add-on-for-gravity-forms-api.php' );
 define('CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__MAIN_CLASS_PATH', __DIR__ . '/includes/class-cleantalk-doboard-add-on-for-gravity-forms.php' );
 define('CLEANTALK_DOBOARD_ADDON_FOR_GRAVITY_FORMS__BOOTSTRAP_CLASS_PATH', __DIR__ . '/includes/class-cleantalk-doboard-add-on-for-gravity-forms-bootstrap.php' );
