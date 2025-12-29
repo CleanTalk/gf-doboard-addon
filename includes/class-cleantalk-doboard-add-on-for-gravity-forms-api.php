@@ -117,6 +117,11 @@ class CleantalkDoboardAddonForGravityFormsDoBoardAPI {
         return !empty($response['data']['labels']) ? $response['data']['labels'] : array();
     }
 
+    /**
+     * @param $data
+     * @param $account_id
+     * @return false|mixed
+     */
     public function add_task($data, $account_id ) {
         $exception = false;
         try {
