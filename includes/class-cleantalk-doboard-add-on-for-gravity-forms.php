@@ -134,7 +134,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         $plugin_dir = dirname( dirname( $this->_full_path ) );
         $main_plugin_file = $plugin_dir . '/' . basename( $this->_path );
         $plugin_basename = plugin_basename( $main_plugin_file );
-        
+
         add_filter('plugin_action_links_' . $plugin_basename, array($this, 'add_plugin_action_links'));
         add_filter('plugin_row_meta', array($this, 'add_plugin_row_meta'), 10, 2);
         add_filter('gform_pre_validation_' . $this->_slug, array($this, 'fix_label_ids_setting'));
@@ -213,7 +213,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         $plugin_dir = dirname( dirname( $this->_full_path ) );
         $main_plugin_file = $plugin_dir . '/' . basename( $this->_path );
         $plugin_basename = plugin_basename( $main_plugin_file );
-        
+
         if ( $plugin_basename === $plugin_file ) {
             $support_link = '<a href="https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
             $review_link = '<a href="https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/reviews/#new-post" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Review', 'cleantalk-doboard-add-on-for-gravity-forms' ) . '</a>';
@@ -564,7 +564,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
                             // in the user email the visible link should be full
                             $task_url['full']
                     );
-                    $email['message'] = str_replace('</body>', $doboard_message_template, $email['message']);
+                    $email['message'] = str_replace('</body>', $doboard_message_template . '</body>', $email['message']);
                 }
             }
             return $email;
