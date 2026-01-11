@@ -3,12 +3,12 @@ Contributors: antonv1, cleantalk, glomberg, alexandergull, sergefcleantalk
 Tags: doboard, project, task, gravity, project management
 Requires at least: 5.6
 Tested up to: 6.9
-Stable tag: 1.0.6
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 
-Organize and track all messages from your site. Gravity Forms, upgraded with Project Management (PM).  
+Organize and track all messages from your site. Gravity Forms, upgraded with Project Management (PM).
 
 == Description ==
 
@@ -20,14 +20,14 @@ This add-on creates tasks in doBoard for every submission made through a [Gravit
 
 
 = KEY FEATURES =
-*	Direct integration between Gravity Forms and doBoard.com. No need for team members to manually create new tasks, which saves time for real work. 
+*	Direct integration between Gravity Forms and doBoard.com. No need for team members to manually create new tasks, which saves time for real work.
 *	Automated task creation from submitted forms.
 *	Organization of project contact information.
 *	Team collaboration features for sales and support teams
 *	A simple alternative to heavyweight CRM platforms
 *	Ideal for small and medium teams managing customer relationships, service requests, or sales funnels through WordPress.
 
-= HOW DOES GF2DB WORK? = 
+= HOW DOES GF2DB WORK? =
 
 Every form entry goes directly into your doBoard project, creating tasks that can be assigned, tracked, and completed. No manual data transfer, no lost submissionsв - just a clear process from form to action. The workflow like this,
 
@@ -65,8 +65,11 @@ GF2DB is an acronym for Gravity Forms to doBoard.
 
 == Changelog ==
 
+= 1.1 =
+* New. Task publicity implemented.
+
 = 1.0.6 =
-* Upd. Title, assets and readme. 
+* Upd. Title, assets and readme.
 
 = 1.0.5 =
 * Upd. Settings. Improve UX.
