@@ -594,7 +594,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
                         $task_response['task_id'],
                         $token_part
                 );
-                $result['short'] = '.../task/' . $task_response['task_id'] . '/';
+                $result['short'] = 'doboard.com/.../' . $task_response['task_id'] . '/';
             }
         }
 
