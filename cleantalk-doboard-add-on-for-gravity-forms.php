@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: doBoard Add-On for Gravity Forms
  * Plugin URI: https://www.gravityforms.com/add-ons/doboard-add-on-for-gravity-forms/
  * Description: Integrates Gravity Forms with doBoard, creates tasks in the doBoard task board for each submission of forms
- * Version: 1.2
+ * Version: 1.1.1
  * Author: CleanTalk Inc
  * Author URI: https://doboard.com/
  * Text Domain: cleantalk-doboard-add-on-for-gravity-forms
