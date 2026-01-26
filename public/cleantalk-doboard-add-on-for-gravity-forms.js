@@ -81,4 +81,27 @@ jQuery(document).ready(function($){
             $labels.html(html).prop('disabled', false);
         });
     });
+
+    // Project Dashboard Link
+    function updateProjectDashboardLink() {
+        var accountId = $('select[name="_gform_setting_doboard_account_id"]').val();
+        var projectId = $('select[name="_gform_setting_doboard_project_id"]').val();
+        var $container = $('#ct-gf-doboard-dashboard-link');
+        if (!$container.length) {
+            $container = $('<div id="ct-gf-doboard-dashboard-link" style="font-size:15px;"></div>');
+            $('.gform-settings-panel__content').append($container);
+        }
+        // Check if accountId and projectId are numeric
+        var isAccountIdNumeric = accountId && /^\d+$/.test(accountId);
+        var isProjectIdNumeric = projectId && /^\d+$/.test(projectId);
+        if (isAccountIdNumeric && isProjectIdNumeric) {
+            var url = 'https://app.doboard.com/' + encodeURIComponent(accountId) + '/projects/' + encodeURIComponent(projectId);
+            $container.html('<a href="' + url + '" target="_blank" rel="noopener" style="font-weight:bold;">Project Dashboard</a>');
+        } else {
+            $container.html('');
+        }
+    }
+
+    $(document).on('change', 'select[name="_gform_setting_doboard_account_id"], select[name="_gform_setting_doboard_project_id"]', updateProjectDashboardLink);
+    $(document).ready(updateProjectDashboardLink);
 });

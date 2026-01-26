@@ -399,6 +399,9 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
         // add comment
         if ($doboard_add_task_response) {
             try {
+                if (!isset($doboard_add_task_response['data']['task_id'])) {
+                    throw new \Exception('Doboard response is not successful');
+                }
                 $doboard_add_comment_response = $this->doboardAddComment($doboard_add_task_response['data']['task_id'], $entry, $form, $task_data);
             } catch(\Exception $e) {
                 $this->errorLog($e->getMessage());
@@ -795,21 +798,29 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
                 array(
                         'title'  => esc_html__( 'doBoard Settings', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'description' => wp_kses_post(
-                                "<a href='https://doboard.com/' target='_blank' style='font-weight: bold;'>" . esc_html__( "doBoard.com", 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a> "
+                                "<a href='https://app.doboard.com/' target='_blank' style='font-weight: bold;'>" . esc_html__( "doBoard.com", 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a> "
                                 . esc_html__( 'is an online task management app that helps you convert messages submitted through forms into actionable tasks.', 'cleantalk-doboard-add-on-for-gravity-forms' )
                         ),
                         'fields' => array(
                                 array(
-                                        'name'     => 'doBoard_user_token',
-                                        'label'    => esc_html__( 'User Token', 'cleantalk-doboard-add-on-for-gravity-forms' ),
-                                        'type'     => 'text',
-                                        'class'    => 'medium',
-                                        'required' => true,
-                                        'tooltip'  => esc_html__( 'Enter your doBoard user token.', 'cleantalk-doboard-add-on-for-gravity-forms'),
-                                        'description' => wp_kses_post(
-                                                esc_html__( 'You can find your user token in your', 'cleantalk-doboard-add-on-for-gravity-forms' ) .
-                                                " <a href='https://cleantalk.org/my/profile' target='_blank'>" . esc_html__( 'doBoard account settings.', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
-                                        ),
+                                    'name'     => 'doBoard_user_token',
+                                    'label'    => esc_html__( 'User Token', 'cleantalk-doboard-add-on-for-gravity-forms' ),
+                                    'type'     => 'text',
+                                    'class'    => 'medium',
+                                    'required' => true,
+                                    'tooltip'  => esc_html__( 'Enter your doBoard user token.', 'cleantalk-doboard-add-on-for-gravity-forms'),
+                                    'description' => wp_kses_post(
+                                        esc_html__( 'You can find your user token in your', 'cleantalk-doboard-add-on-for-gravity-forms' ) .
+                                        " <a href='https://cleantalk.org/my/profile' target='_blank'>" . esc_html__( 'doBoard account settings.', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                                    ),
+                                    'after_input' => wp_kses_post(
+                                        '<div style="margin-top:8px;color:#666;font-size:13px;">'
+                                        . esc_html__('The next step is set up your exactly form to push messages to doBoard,', 'cleantalk-doboard-add-on-for-gravity-forms') . '<br>'
+                                        . '1. ' . esc_html__('Go to Forms -> A_FORM -> Settings -> doBoard Feeds.', 'cleantalk-doboard-add-on-for-gravity-forms') . '<br>'
+                                        . '2. ' . esc_html__('Configure the integration options (account, project, board, labels, etc.).', 'cleantalk-doboard-add-on-for-gravity-forms') . '<br>'
+                                        . '3. ' . esc_html__('Save FORM settings.', 'cleantalk-doboard-add-on-for-gravity-forms') .
+                                        '</div>'
+                                    ),
                                 ),
                                 array(
                                         'type'     => 'save',
@@ -847,7 +858,7 @@ class CleantalkDoboardAddonForGravityForms extends GFFeedAddOn {
                 array(
                         'title'  => esc_html__( 'doBoard Feeds', 'cleantalk-doboard-add-on-for-gravity-forms' ),
                         'description' => wp_kses_post(
-                                "<a href='https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
+                                "<a href='https://wordpress.org/support/plugin/cleantalk-doboard-add-on-for-gravity-forms/' target='_blank' rel='noopener noreferrer'>" . esc_html__( 'Plugin support', 'cleantalk-doboard-add-on-for-gravity-forms' ) . "</a>"
                         ),
                         'fields' => array(
                                 array(
