@@ -3,7 +3,7 @@ Contributors: antonv1, cleantalk, glomberg, alexandergull, sergefcleantalk
 Tags: doboard, project, task, gravity, project management
 Requires at least: 5.6
 Tested up to: 6.9
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ GF2DB is an acronym for Gravity Forms to doBoard.
 3. Task created in doBoard.
 
 == Changelog ==
+
+= 1.2 =
+* Mod. Description. Added a description of the steps, a dynamic link to the project and editing support links
 
 = 1.1 =
 * New. Task publicity implemented.
