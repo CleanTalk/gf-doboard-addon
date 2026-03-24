@@ -12,6 +12,8 @@ Organize and track all messages from your site. Gravity Forms, upgraded with Pro
 
 == Description ==
 
+**Plugin is discontinued, please read more [https://www.doboard.com/blog/discontinued-doboard-add-on-for-gravity-forms-gf2db/](https://www.doboard.com/blog/discontinued-doboard-add-on-for-gravity-forms-gf2db/)**
+
 Seamlessly integrate Gravity Forms with doBoard (Project management). Automatically create tasks, organize and track every message from site.
 
 This add-on creates tasks in doBoard for every submission made through a [Gravity Forms](https://www.gravityforms.com/) on your site. It automates the processing of leads, orders, support requests, and any other data collected through your websiteв's forms. Short name (acronym) for the plugin is GF2DB.
